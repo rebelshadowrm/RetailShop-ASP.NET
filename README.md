@@ -1,5 +1,5 @@
 # ASP-Group-Project
 
-Default admin account
-Username: admin@example.com
-Password: <removed-password>
+\n Default admin account
+\n Username: admin@example.com
+\n Password: <removed-password>
