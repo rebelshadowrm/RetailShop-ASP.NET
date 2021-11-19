@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+img {
+    max-width: 100%;
+}
+
+#shop {
+    max-height: 75vh !important;
+}

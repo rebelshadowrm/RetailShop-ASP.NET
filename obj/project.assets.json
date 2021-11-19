@@ -10025,11 +10025,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\AspC#Fall\\ASP-Group-Project\\Asp-Group-Project.csproj",
+      "projectUniqueName": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj",
       "projectName": "Asp-Group-Project",
-      "projectPath": "D:\\AspC#Fall\\ASP-Group-Project\\Asp-Group-Project.csproj",
+      "projectPath": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj",
       "packagesPath": "C:\\Users\\Alex\\.nuget\\packages\\",
-      "outputPath": "D:\\AspC#Fall\\ASP-Group-Project\\obj\\",
+      "outputPath": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Alex\\AppData\\Roaming\\NuGet\\NuGet.Config",
