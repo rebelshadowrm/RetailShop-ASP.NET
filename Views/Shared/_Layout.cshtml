@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Asp_Group_Project</title>
+    <title>@ViewData["Title"] - Asp Group Project</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
                 <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator_midnight.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -28,12 +28,49 @@
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
+                    <button id="toggleCart" class="cart-button"><i class="fas fa-shopping-cart" aria-hidden="true"></i> cart</button>
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <template id="quantitiy-btn">
+                <div class="quantity-btn">
+                <button class="quantity-add"></button>
+                <span class="quantity-number"></span>
+                <button class="quantity-remove"></button>
+                </div>
+            </template>
+            <section id="cart-container">
+                <div class="cart-items">
+                    <template id="cart-item">
+                        <div class="cart-item">
+                            <img src="" class="cart-item-image"/>
+                            <h2 class="cart-item-name"></h2>
+                            <p class="cart-item-price"></p>
+                            <div class="item-quantity-container">
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="cart-numbers">
+                    <div class="subtotal-group">
+                    <h3>Subtotal</h3>
+                    <p class="cart-quantity">(1 item)</p>
+                    <p class="cart-subtotal">$0.00</p>
+                    </div>
+                    <div class="taxes-group">
+                        <h3>Taxes</h3>
+                        <p class="cart-taxes">Calculated at checkout</p>
+                    </div>
+                    <div class="total-group">
+                        <h3>Total</h3>
+                        <p class="cart-total">$00.00</p>
+                    </div>
+                </div>
+                <input type="button" class="checkout" value="checkout"/>
+            </section>
             @RenderBody()
         </main>
     </div>
@@ -45,6 +82,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/2261da91cd.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

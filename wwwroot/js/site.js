@@ -1,6 +1,13 @@
 ﻿import Tabulator from 'https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.es2015.min.js';
 const shopAPI = 'https://fakestoreapi.com/products';
 
+class Cart {
+    constructor(productId, quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     //fetch all for future all product usage or fallbacks
@@ -84,7 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
             shopContainer.appendChild(rowClone);                   
             });
         });
-        
+
+        testCart();
+        getCartItems();
     }
 
     // // table
@@ -113,3 +122,75 @@ document.addEventListener("DOMContentLoaded", function () {
     // });
 
 });
+
+var testCart = function() {
+    fetch('https://fakestoreapi.com/carts/5')
+            .then(res=>res.json())
+            .then(json=>{
+                let data = json.products;
+                let items = [];
+                data.forEach(e => {
+                    items.push(new Cart(e.productId, e.quantity));
+                })
+                localStorage.setItem('cartItems', JSON.stringify(items));
+                console.log(data);
+            })
+
+}
+
+
+//checkout toggle
+
+
+
+//cart items
+async function getCartItems() {
+
+    //grab items from localstorage
+    //this will be eventually replaced with some kind of fetch
+    //so that data can be obtained from db
+    let storage = localStorage.getItem("cartItems");
+    let cartItems = JSON.parse(storage);
+
+    //define container and template
+    const cartContainer = document.querySelector(".cart-items");
+    const cartItemTemplate = document.querySelector("#cart-item");
+
+    if(cartItems) {
+        cartItems.forEach(elem => {
+            fetch(`https://fakestoreapi.com/products/${elem.productId}`)
+            .then(res=>res.json())
+            .then(json=> {
+                console.log(json);
+
+
+                //clone new cart item and insert cart item into template
+                let cartItemClone = cartItemTemplate.content.cloneNode(true);
+                let cartItemImage = cartItemClone.querySelector(".cart-item-image"),
+                    cartItemName = cartItemClone.querySelector(".cart-item-name"),
+                    cartItemPrice = cartItemClone.querySelector(".cart-item-price");
+
+                cartItemImage.src=json.image;
+                cartItemName.innerText=json.title;
+                cartItemPrice.innerText=json.price;
+                
+                cartContainer.appendChild(cartItemClone);
+            });
+
+
+        });
+    }
+
+
+
+}
+
+var saveCart = function(cart) {
+    let storage = JSON.stringify(cart);
+    localStorage.setItem("cartItems", storage);
+}
+
+//TODO: add quantitiy buttons
+//current idea is a function that uses the template to generate the button
+//+ and - programatically add and remove quantity
+//then a listener changes the quantity displayed
