@@ -83,6 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     let title = itemClone.querySelector(".product-name");
                     title.innerText = itemTitle;
+                    let rating = itemClone.querySelector(".Stars");
+                    rating.style=`--rating: ${itemRating.rate}`;
+                    let ratingCount = itemClone.querySelector(".rating-count")
+                    ratingCount.innerText=`(${itemRating.count})`;
                     let price = itemClone.querySelector(".product-price");
                     price.innerText = `$${itemPrice}`;
 

@@ -1,4 +1,11 @@
 
+:root {
+  --star-size: 1.25rem;
+  --star-color: rgba(0, 0, 0, 0.3);
+  --star-background: #fc0;
+  --rating: 0;
+}
+
 main {
   position: relative;
 }
@@ -30,30 +37,85 @@ img {
   gap: var(--gap);
 }
 
+.product-type {
+  text-transform: capitalize;
+  font-weight: 700;
+}
+
 .row-items {
   display: flex;
   flex-direction: row;
   gap: var(--gap);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .shop-item {
-  flex-grow: 1;
-  max-width: 30%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap);
+  flex: 1 1 24%;
+  max-width: 15rem;
+  display: grid;
+  grid-template-areas:
+  'image'
+  'name'
+  'rating'
+  'price';
+  grid-template-rows: 1fr minmax(5rem, max-content) max-content max-content;
+  padding: 1rem;
+  background: #fff;
+}
+.shop-item:hover {
+  cursor: pointer;
+  filter: brightness(.9);
 }
 
 .product-name {
-  font-size: 1.2rem;
+  grid-area: name;
+  font-size: 1rem;
   font-weight: 600;
+  align-self: start;
+  padding: 0;
+  margin: 0;
+  text-align: left;
 }
 
 .product-image {
-  width: 125px;
+  grid-area: image;
+  max-height: 15rem;
+  align-self: end;
+  justify-self: center;
+  padding: 1rem;
+}
+
+.product-price {
+  grid-area: price;
+  align-self: end;
+}
+
+/* Stars */
+
+.Stars {
+  grid-area: rating;
+  display: grid;
+  grid-auto-flow: column;
+  place-content: flex-start;
+  align-self: end;
+  --percent: calc(var(--rating) / 5 * 100%);
+  font-size: var(--star-size);
+  font-family: Times;
+  height: 2rem;
+  
+}
+.Stars::before {
+  content: '★★★★★';
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.rating-count {
+  font-size: .9rem;
+  margin-top: .22rem;
 }
 
 
@@ -79,6 +141,8 @@ img {
   'totals'
   'checkout';
   max-width: 35vw;
+
+  transform: translateX(100%);
 }
 
 
@@ -151,6 +215,10 @@ img {
 .checkout {
   grid-area: checkout;
 }
+
+
+
+
 
 
 
