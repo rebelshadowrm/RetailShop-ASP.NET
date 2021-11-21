@@ -37,9 +37,14 @@
         <main role="main" class="pb-3">
             <template id="quantitiy-btn">
                 <div class="quantity-btn">
-                <button class="quantity-add"></button>
-                <span class="quantity-number"></span>
-                <button class="quantity-remove"></button>
+                    <div class="add-to-cart">
+                        <button class="cart-add">Add to cart</button>
+                    </div>
+                    <div class="change-quantity">
+                        <button class="quantity-remove">-</button>
+                        <span class="quantity-number">0</span>
+                         <button class="quantity-add">+</button>
+                    </div>
                 </div>
             </template>
             <section id="cart-container">
@@ -49,8 +54,7 @@
                             <img src="" class="cart-item-image"/>
                             <h2 class="cart-item-name"></h2>
                             <p class="cart-item-price"></p>
-                            <div class="item-quantity-container">
-                            </div>
+                            <div class="cart-item-quantity"></div>
                         </div>
                     </template>
                 </div>

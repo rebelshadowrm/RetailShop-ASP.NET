@@ -118,6 +118,23 @@ img {
   margin-top: .22rem;
 }
 
+.quantity-btn {
+
+}
+
+.quantity-btn > .add-to-cart.hide {
+  display: none;
+}
+.quantity-btn > .add-to-cart.show {
+  display: inline-block;
+}
+
+.quantity-btn > .change-quantity.hide {
+  display: none;
+}
+.quantity-btn > .change-quantity.show {
+  display: inline-block;
+}
 
 /* CART */
 

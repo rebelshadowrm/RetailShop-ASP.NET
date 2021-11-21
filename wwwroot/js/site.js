@@ -43,14 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
         //generate shop
         const shopRowTemplate = document.querySelector("#shop-row"),
               shopItemTemplate = document.querySelector("#shop-item"),
-              shopContainer = document.querySelector("#shop-container");
+              shopContainer = document.querySelector("#shop-container"),
+              quantityTemplate = document.querySelector("#quantitiy-btn");
               
-        
-        
-        
-        
-
-        
 
         //get list of categories and remove duplicates
         let arr = [];
@@ -89,16 +84,121 @@ document.addEventListener("DOMContentLoaded", function () {
                     ratingCount.innerText=`(${itemRating.count})`;
                     let price = itemClone.querySelector(".product-price");
                     price.innerText = `$${itemPrice}`;
-
+                    let quantityContainer = itemClone.querySelector(".item-quantity-container")
+                    let quantityClone = quantityTemplate.content.cloneNode(true);
+                    quantityContainer.dataset.item=itemId;
+                    quantityContainer.appendChild(quantityClone);
                     rowItemContainer.appendChild(itemClone);
+
                 }
             shopContainer.appendChild(rowClone);                   
             });
         });
 
+        let quantityBtn = document.querySelectorAll(".quantity-btn");
+        quantityBtn.forEach(e => {
+            let quantity = e.querySelector(".quantity-number");
+            let changeQuantity = e.querySelector(".change-quantity");
+            let addToCart = e.querySelector(".add-to-cart");
+
+            if (parseInt(quantity.innerText) <= 0) {
+                changeQuantity.classList.add("hide");
+                changeQuantity.classList.remove("show");
+                quantity.innerText="0";
+            } else {
+                addToCart.classList.add("hide");
+                addToCart.classList.remove("show");
+            }
+        });
+        
+
+        // quantityNumber.addEventListener('change', e => {
+        //     let changeQuantity = document.querySelector(".change-quantity");
+        //     let addToCart = document.querySelector(".add-to-cart");
+        //     if(e.innerText >= 1) {
+        //         addToCart.classList.remove("show");
+        //         addToCart.classList.add("hide");
+        //         changeQuantity.classList.remove("hide");
+        //         changeQuantity.classList.add("show");
+        //     }
+        // });
+
         testCart();
         getCartItems();
+
+        const quantityNode = document.querySelectorAll(".quantity-number");
+        const observerOptions = {
+            childList: true,
+            attributes: true,
+            subtree: false
+        }
+        quantityNode.forEach( e => {
+            let observer = new MutationObserver(showHide);
+            observer.observe(e, observerOptions);
+        })
     }
+
+
+    async function showHide(mutations) {
+        
+        for (let mutation of mutations) {
+            if (mutation.target.matches(".quantity-number")) {
+                let parent = mutation.target.parentElement.parentElement;
+                let changeQuantity = parent.querySelector(".change-quantity");
+                let addToCart = parent.querySelector(".add-to-cart");
+                if (parseInt(mutation.target.innerText) <= 0) {
+                    changeQuantity.classList.add("hide");
+                    changeQuantity.classList.remove("show");
+                    addToCart.classList.add("show");
+                    addToCart.classList.remove("hide");
+                    if(parseInt(mutation.target.innerText) < 0) {
+                        mutation.target.innerText = 0;
+                    }
+                } else if (parseInt(mutation.target.innerText) > 0) {
+                    changeQuantity.classList.add("show");
+                    changeQuantity.classList.remove("hide");
+                    addToCart.classList.add("hide");
+                    addToCart.classList.remove("show");
+                }
+            }
+        }
+
+    }
+
+    document.addEventListener('click', function (event) {
+        if (event.target.matches('.cart-add')) {
+            addToCart(event);
+        }
+        if (event.target.matches('.quantity-add')) {
+            quantityAdd(event);
+        }
+        if (event.target.matches('.quantity-remove')) {
+            quantityRemove(event);
+        }
+        return
+    }, false);
+
+
+
+    async function addToCart(e) {
+        let parent = e.target.parentElement.parentElement;
+        let quantity = parent.querySelector(".quantity-number");
+        quantity.innerText++;
+    }
+
+    async function quantityRemove(e) {
+        let parent = e.target.parentElement.parentElement;
+        let quantity = parent.querySelector(".quantity-number");
+        quantity.innerText--;
+    }
+
+    async function quantityAdd(e) {
+        let parent = e.target.parentElement.parentElement;
+        let quantity = parent.querySelector(".quantity-number");
+        quantity.innerText++;
+    }
+
+
 
     // // table
 
@@ -137,7 +237,6 @@ var testCart = function() {
                     items.push(new Cart(e.productId, e.quantity));
                 })
                 localStorage.setItem('cartItems', JSON.stringify(items));
-                console.log(data);
             })
 
 }
@@ -165,7 +264,6 @@ async function getCartItems() {
             fetch(`https://fakestoreapi.com/products/${elem.productId}`)
             .then(res=>res.json())
             .then(json=> {
-                console.log(json);
 
 
                 //clone new cart item and insert cart item into template
