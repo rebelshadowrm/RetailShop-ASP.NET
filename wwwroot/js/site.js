@@ -105,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 changeQuantity.classList.add("hide");
                 changeQuantity.classList.remove("show");
                 quantity.innerText="0";
+
             } else {
                 addToCart.classList.add("hide");
                 addToCart.classList.remove("show");
@@ -145,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         mutation.target.innerText = 0;
                     }
                     //reload cart call to reflect item removed
+                    removeCartItem(parent.parentElement.dataset.item);
                 } else if (parseInt(mutation.target.innerText) > 0) {
                     changeQuantity.classList.add("show");
                     changeQuantity.classList.remove("hide");
@@ -269,38 +271,34 @@ async function getCartItems() {
     const cartContainer = document.querySelector(".cart-items");
     const cartItemTemplate = document.querySelector("#cart-item");
 
-    //clears cart of items before creating new cart items
-    if( typeof Element.prototype.clearChildren === 'undefined' ) {
-        Object.defineProperty(Element.prototype, 'clearChildren', {
-          configurable: true,
-          enumerable: false,
-          value: function() {
-            while(this.firstChild) this.removeChild(this.lastChild);
-          }
-        });
-    }
-    cartContainer.clearChildren();
-
-    console.log(cartItems);
-    //get cart item information via API
+    
     if(cartItems) {
         cartItems.forEach(elem => {
+            //get cart item information via API
             fetch(`https://fakestoreapi.com/products/${elem.productId}`)
             .then(res=>res.json())
             .then(json=> {
-
-
                 //clone new cart item and insert cart item into template
                 let cartItemClone = cartItemTemplate.content.cloneNode(true);
                 let cartItemImage = cartItemClone.querySelector(".cart-item-image"),
                     cartItemName = cartItemClone.querySelector(".cart-item-name"),
-                    cartItemPrice = cartItemClone.querySelector(".cart-item-price");
+                    cartItemPrice = cartItemClone.querySelector(".cart-item-price"),
+                    cartItem = cartItemClone.querySelector(".cart-item");
 
                 cartItemImage.src=json.image;
                 cartItemName.innerText=json.title;
                 cartItemPrice.innerText=json.price;
-                
-                cartContainer.appendChild(cartItemClone);
+                cartItem.dataset.item=json.id;
+
+                let items = document.querySelectorAll(".cart-item");
+                let i = [];
+                items.forEach(e => {
+                    i.push(e.dataset.item)
+                });
+                let unique = Array.from(new Set(i));
+                if((unique.find(element => element === elem.productId) === undefined)) {
+                    cartContainer.appendChild(cartItemClone);
+                }
             });
         });
     }
@@ -309,8 +307,52 @@ async function getCartItems() {
 async function addCartItem(productId, quantity) {
     let items = [];
     let get = localStorage.getItem("cartItems");
-    if(get) { items = JSON.parse(get); }
-    items.push(new Cart(productId, quantity));
+    if(get) {
+        let id = productId;
+        items = JSON.parse(get); 
+        let find = items.find( ({ productId }) => productId === id)
+        if(!find) {
+            items.push(new Cart(id, quantity));
+        }
+    } else {
+        items = [
+            {productId, quantity},
+        ]
+    }
     let storage = JSON.stringify(items);
     localStorage.setItem("cartItems", storage);
 }
+
+async function removeCartItem(productId) {
+    let cart = document.querySelector(".cart-items");
+    let cartItem = cart.querySelector(`[data-item="${productId}"]`);
+    if(cartItem) {
+        let get = localStorage.getItem("cartItems");
+        let items = [];
+        if(get) {
+            let id = productId;
+            items = JSON.parse(get);
+            let find = items.find( ({ productId }) => productId === id);
+            if(find) {
+                let index = items.map(e => e.productId).indexOf(productId);
+                items.splice(index, 1);
+                localStorage.setItem("cartItems", JSON.stringify(items));
+                cartItem.remove();
+            }
+        }
+    }
+}
+//Code that can be used after checkout, to delete all items in the cart.
+
+//clears cart of items before creating new cart items
+// if( typeof Element.prototype.clearChildren === 'undefined' ) {
+//     Object.defineProperty(Element.prototype, 'clearChildren', {
+//       configurable: true,
+//       enumerable: false,
+//       value: function() {
+//         while(this.firstChild) this.removeChild(this.lastChild);
+//       }
+//     });
+// }
+// cartContainer.clearChildren();
+
