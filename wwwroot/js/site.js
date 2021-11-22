@@ -112,18 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         
 
-        // quantityNumber.addEventListener('change', e => {
-        //     let changeQuantity = document.querySelector(".change-quantity");
-        //     let addToCart = document.querySelector(".add-to-cart");
-        //     if(e.innerText >= 1) {
-        //         addToCart.classList.remove("show");
-        //         addToCart.classList.add("hide");
-        //         changeQuantity.classList.remove("hide");
-        //         changeQuantity.classList.add("show");
-        //     }
-        // });
-
-        testCart();
+        //testCart();
         getCartItems();
 
         const quantityNode = document.querySelectorAll(".quantity-number");
@@ -139,8 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    async function showHide(mutations) {
-        
+
+
+    async function showHide(mutations) {  
         for (let mutation of mutations) {
             if (mutation.target.matches(".quantity-number")) {
                 let parent = mutation.target.parentElement.parentElement;
@@ -154,6 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if(parseInt(mutation.target.innerText) < 0) {
                         mutation.target.innerText = 0;
                     }
+                    //reload cart call to reflect item removed
                 } else if (parseInt(mutation.target.innerText) > 0) {
                     changeQuantity.classList.add("show");
                     changeQuantity.classList.remove("hide");
@@ -162,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
-
     }
 
     document.addEventListener('click', function (event) {
@@ -183,19 +173,30 @@ document.addEventListener("DOMContentLoaded", function () {
     async function addToCart(e) {
         let parent = e.target.parentElement.parentElement;
         let quantity = parent.querySelector(".quantity-number");
+        let cart = document.querySelector("#cart-container");
+        let productId = parent.parentElement.dataset.item;
         quantity.innerText++;
+        if(!cart.classList.contains("show")) {
+            toggleCart();
+        };
+        addCartItem(productId, quantity.innerText);
+
+        //perhaps not the most efficient
+        getCartItems();
     }
 
     async function quantityRemove(e) {
         let parent = e.target.parentElement.parentElement;
         let quantity = parent.querySelector(".quantity-number");
         quantity.innerText--;
+        //update cart call (perhaps just a local storage change)
     }
 
     async function quantityAdd(e) {
         let parent = e.target.parentElement.parentElement;
         let quantity = parent.querySelector(".quantity-number");
         quantity.innerText++;
+        //update cart call (perhaps just a local storage change)
     }
 
 
@@ -227,24 +228,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-var testCart = function() {
-    fetch('https://fakestoreapi.com/carts/5')
-            .then(res=>res.json())
-            .then(json=>{
-                let data = json.products;
-                let items = [];
-                data.forEach(e => {
-                    items.push(new Cart(e.productId, e.quantity));
-                })
-                localStorage.setItem('cartItems', JSON.stringify(items));
-            })
-
-}
+//seeded cart for example
+// var testCart = function() {
+//     fetch('https://fakestoreapi.com/carts/5')
+//             .then(res=>res.json())
+//             .then(json=>{
+//                 let data = json.products;
+//                 let items = [];
+//                 data.forEach(e => {
+//                     items.push(new Cart(e.productId, e.quantity));
+//                 })
+//                 localStorage.setItem('cartItems', JSON.stringify(items));
+//             })
+// }
 
 
 //checkout toggle
 
-
+async function toggleCart() {
+    let cart = document.querySelector("#cart-container");
+    let shop = document.querySelector("#shop-container")
+    cart.classList.toggle("show");
+    shop.classList.toggle("cartShow")
+}
+const cartBtn = document.querySelector("#toggleCart");
+cartBtn.addEventListener('click', ()=> {
+    toggleCart();
+});
 
 //cart items
 async function getCartItems() {
@@ -259,6 +269,20 @@ async function getCartItems() {
     const cartContainer = document.querySelector(".cart-items");
     const cartItemTemplate = document.querySelector("#cart-item");
 
+    //clears cart of items before creating new cart items
+    if( typeof Element.prototype.clearChildren === 'undefined' ) {
+        Object.defineProperty(Element.prototype, 'clearChildren', {
+          configurable: true,
+          enumerable: false,
+          value: function() {
+            while(this.firstChild) this.removeChild(this.lastChild);
+          }
+        });
+    }
+    cartContainer.clearChildren();
+
+    console.log(cartItems);
+    //get cart item information via API
     if(cartItems) {
         cartItems.forEach(elem => {
             fetch(`https://fakestoreapi.com/products/${elem.productId}`)
@@ -278,21 +302,15 @@ async function getCartItems() {
                 
                 cartContainer.appendChild(cartItemClone);
             });
-
-
         });
     }
-
-
-
 }
 
-var saveCart = function(cart) {
-    let storage = JSON.stringify(cart);
+async function addCartItem(productId, quantity) {
+    let items = [];
+    let get = localStorage.getItem("cartItems");
+    if(get) { items = JSON.parse(get); }
+    items.push(new Cart(productId, quantity));
+    let storage = JSON.stringify(items);
     localStorage.setItem("cartItems", storage);
 }
-
-//TODO: add quantitiy buttons
-//current idea is a function that uses the template to generate the button
-//+ and - programatically add and remove quantity
-//then a listener changes the quantity displayed
