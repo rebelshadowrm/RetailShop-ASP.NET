@@ -9,9 +9,7 @@ class Cart {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
-    //fetch all for future all product usage or fallbacks
-
+    //fetch all products 
     var url = shopAPI,
         options = {
         method: 'GET',
@@ -41,10 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         //generate shop
-        const shopRowTemplate = document.querySelector("#shop-row"),
-              shopItemTemplate = document.querySelector("#shop-item"),
-              shopContainer = document.querySelector("#shop-container"),
-              quantityTemplate = document.querySelector("#quantitiy-btn");
+        const   shopRowTemplate = document.querySelector("#shop-row"),
+                shopItemTemplate = document.querySelector("#shop-item"),
+                shopContainer = document.querySelector("#shop-container"),
+                quantityTemplate = document.querySelector("#quantitiy-btn");
               
 
         //get list of categories and remove duplicates
@@ -90,22 +88,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     quantityContainer.appendChild(quantityClone);
                     rowItemContainer.appendChild(itemClone);
 
+                    //set item quantity values to reflect localStorage
+                    let storage = localStorage.getItem("cartItems");
+                    let items = JSON.parse(storage);
+                    let find = items.find( ({ productId }) => productId === itemId.toString());
+                    let number = quantityContainer.querySelector(".quantity-number");
+                    number.innerText=find?.quantity ?? 0;
                 }
             shopContainer.appendChild(rowClone);                   
             });
         });
 
+        //set initial show/hide states
         let quantityBtn = document.querySelectorAll(".quantity-btn");
         quantityBtn.forEach(e => {
             let quantity = e.querySelector(".quantity-number");
             let changeQuantity = e.querySelector(".change-quantity");
             let addToCart = e.querySelector(".add-to-cart");
-
             if (parseInt(quantity.innerText) <= 0) {
                 changeQuantity.classList.add("hide");
                 changeQuantity.classList.remove("show");
                 quantity.innerText="0";
-
             } else {
                 addToCart.classList.add("hide");
                 addToCart.classList.remove("show");
