@@ -2,3 +2,5 @@
 obj/Debug/**
 *.log
 *.cache
+.vs/**
+
