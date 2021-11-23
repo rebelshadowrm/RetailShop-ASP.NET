@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FcIxCzA63hm94ul5v1z1AKspII392Ndnzb+s2ebf0V8=",
+  "Hash": "85mbbsZiXIOTfoRgMBc7vzwqJZE+rYs0i9opoha/Sso=",
   "Source": "Asp-Group-Project",
   "BasePath": "_content/Asp-Group-Project",
   "Mode": "Default",
@@ -1120,6 +1120,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\wwwroot\\js\\storeData.json",
+      "SourceId": "Asp-Group-Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\wwwroot\\",
+      "BasePath": "_content/Asp-Group-Project",
+      "RelativePath": "js/storeData.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\storeData.json"
     },
     {
       "Identity": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
