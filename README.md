@@ -1,5 +1,9 @@
 # ASP-Group-Project  
-# Please list who is in this group and thier user name
+# Group Members
+Alex Basine -- Rebelshadowrm
+Jackson Smith -- jrsmith-6246
+Jackson B -- ChooeyJr
+David -- DavidN3
 
 Default admin account  
 Username: admin@example.com  
