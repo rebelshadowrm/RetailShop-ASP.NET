@@ -1,5 +1,5 @@
 # ASP-Group-Project  
-# Group Members
+Group Members
 Alex Basine -- Rebelshadowrm  
 Jackson Smith -- jrsmith-6246  
 Jackson B -- ChooeyJr  
