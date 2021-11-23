@@ -1,20 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj": {}
+    "C:\\Users\\jacks\\OneDrive\\Desktop\\School\\INFO 2534 - ASP\\FinalProject\\Asp-Group-Project.csproj": {}
   },
   "projects": {
-    "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj": {
+    "C:\\Users\\jacks\\OneDrive\\Desktop\\School\\INFO 2534 - ASP\\FinalProject\\Asp-Group-Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj",
+        "projectUniqueName": "C:\\Users\\jacks\\OneDrive\\Desktop\\School\\INFO 2534 - ASP\\FinalProject\\Asp-Group-Project.csproj",
         "projectName": "Asp-Group-Project",
-        "projectPath": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\Asp-Group-Project.csproj",
-        "packagesPath": "C:\\Users\\Alex\\.nuget\\packages\\",
-        "outputPath": "D:\\AspC#Fall\\Git\\ASP-Group-Project\\obj\\",
+        "projectPath": "C:\\Users\\jacks\\OneDrive\\Desktop\\School\\INFO 2534 - ASP\\FinalProject\\Asp-Group-Project.csproj",
+        "packagesPath": "C:\\Users\\jacks\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jacks\\OneDrive\\Desktop\\School\\INFO 2534 - ASP\\FinalProject\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Alex\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jacks\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

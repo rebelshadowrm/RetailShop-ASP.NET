@@ -74,7 +74,8 @@
                         <p class="cart-total">$00.00</p>
                     </div>
                 </div>
-                <input type="button" class="checkout" value="checkout"/>
+                @*<input type="button" class="checkout" value="Checkout"/>*@
+                <a asp-area="" asp-controller="Home" asp-action="Checkout">Checkout</a>
             </section>
             @RenderBody()
         </main>
