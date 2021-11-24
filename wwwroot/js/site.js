@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
 
 
 
+
 // add to cart / quantity buttons event handlers
 async function showHide(mutations) {  
     for (let mutation of mutations) {
@@ -235,7 +236,7 @@ async function addCartItemToCart(productId) {
         let cartContainer = document.querySelector(".cart-items"),
             json = await fetchJSON(),
             item = json.filter( ({ id }) => id === parseInt(productId));
-            
+
         cartContainer.appendChild(await createCartItem(item[0]));
     } catch(err) {
         console.log(err.message);
