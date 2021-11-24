@@ -25,6 +25,16 @@ namespace Asp_Group_Project.Controllers
             return View();
         }
 
+        public IActionResult Checkout()
+        {
+            return View();
+        }
+
+        public IActionResult ConfirmCheckout()
+        {
+
+        }
+
         public IActionResult Details()
         {
             return View();
