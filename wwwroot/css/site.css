@@ -7,6 +7,7 @@
   --btn-primary: hsl(220, 100%, 50%);
   --btn-pirmary-hover: hsl(225, 100%, 40%);
   --btn-extra: hsl(210, 100%, 50%);
+  --gap-size: 20px;
 }
 
 main {
@@ -316,6 +317,41 @@ img {
 .checkout {
   grid-area: checkout;
 }
+
+/* About Founders */
+.intro-copy {
+    max-width: 40em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#about-template [class^="col"] {
+    padding: 2rem;
+}
+
+#about-template .row {
+    padding-top: var(--gap-size);
+}
+
+.profile-col img {
+    object-fit: cover;
+    height: 140px;
+    width: 140px;
+}
+
+.profile-col h2 {
+    max-width: 24em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-col p {
+    max-width: 24em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 
 
 
