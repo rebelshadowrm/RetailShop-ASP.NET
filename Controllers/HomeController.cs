@@ -32,7 +32,7 @@ namespace Asp_Group_Project.Controllers
 
         public IActionResult ConfirmCheckout()
         {
-
+            return View();
         }
 
         public IActionResult Details()
