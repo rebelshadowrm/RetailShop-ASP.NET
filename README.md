@@ -8,6 +8,6 @@ website: https://asp-group-project20211123101749.azurewebsites.net
 Alex Basine -- Rebelshadowrm  
 Jackson Smith -- jrsmith-6246  
 Jackson B -- ChooeyJr  
-David -- DavidN3  
+David Nguyen -- DavidN3  
 
 
