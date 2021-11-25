@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
 
 
         await getCartItems();
+
         //observer for every time the cart changes
         const cart = document.querySelector("#cart-container");
         const cartObserverOptions = {
@@ -52,10 +53,35 @@ document.addEventListener("DOMContentLoaded",  async () => {
         let observer = new MutationObserver(cartQuantityObserver);
         observer.observe(cart, cartObserverOptions);
 
+        const clickableShopItems = document.querySelectorAll(".shop-item");
+        clickableShopItems.forEach(e => {
+            let id = e.querySelector('.item-quantity-container').dataset.item;
+            e.addEventListener('click', (e) => {
+                let parent = e.target.parentElement.parentElement;
+                //call modal
+                console.log(parent);
+                if(parent.querySelector(".quantity-btn")) {
+                itemDetailsModal(id);
+                }
+            });
+        });
+
+
     } catch(err) {
         console.log(err.message);
     }
 });
+
+//clears all children
+if( typeof Element.prototype.clearChildren === 'undefined' ) {
+    Object.defineProperty(Element.prototype, 'clearChildren', {
+       configurable: true,
+       enumerable: false,
+       value: function() {
+         while(this.firstChild) this.removeChild(this.lastChild);
+       }
+     });
+ }
 
 async function fetchJSON() {
     const response = await fetch('./js/storeData.json');
@@ -360,8 +386,6 @@ async function setCartItemsJSON(items) {
     return Promise.resolve("Cart updated");
 }
 
-
-
 async function removeCartItem(productId) {
     try {
         let cart = document.querySelector(".cart-items"),
@@ -373,6 +397,53 @@ async function removeCartItem(productId) {
             await setCartItemsJSON(items);
             cartItem?.remove();
         }
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+
+//Item details modal
+const itemDetailsModal = async (id) => {
+    try {
+        const modal = document.querySelector("#modal-container");
+        modal.classList.add("show");
+        window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.classList.remove("show");
+            }
+        }
+        await createDetailModal(id);
+
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+
+async function createDetailModal(productId) {
+    try {
+    let detailsTemplate = document.querySelector("#item-details-template"),
+        modalContainer = document.querySelector("#modal-container"),
+        detailsClone = detailsTemplate.content.cloneNode(true),
+        detailsName = detailsClone.querySelector(".item-details-name"),
+        detailsImage = detailsClone.querySelector(".item-details-image"),
+        detailsDescription = detailsClone.querySelector(".item-details-description"),
+        detailsPrice = detailsClone.querySelector(".item-details-price");
+
+    let json = await fetchJSON();
+    let item = json.filter( ({ id }) => id === parseInt(productId)) ?? [];
+    item = item[0];
+    
+    detailsName.innerText=item.title;
+    detailsImage.src="";
+    detailsImage.style.backgroundImage = `url(${item.image})`;
+    detailsDescription.innerText=item.description;
+    detailsPrice.innerText=item.price;
+
+    modalContainer.clearChildren();
+    modalContainer.append(detailsClone);
+
+
     } catch(err) {
         console.log(err.message);
     }
@@ -404,17 +475,7 @@ async function removeCartItem(productId) {
 //     ],
 // });
 
-//Code that can be used after checkout, to delete all items in the cart.
 
-//clears cart of items before creating new cart items
-// if( typeof Element.prototype.clearChildren === 'undefined' ) {
-//     Object.defineProperty(Element.prototype, 'clearChildren', {
-//       configurable: true,
-//       enumerable: false,
-//       value: function() {
-//         while(this.firstChild) this.removeChild(this.lastChild);
-//       }
-//     });
-// }
-// cartContainer.clearChildren();
+
+
 
