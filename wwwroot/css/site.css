@@ -1,3 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap");
+*, *::before, *::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+@-ms-viewport {
+  width: device-width;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  max-width: 65ch;
+}
+
+IMG {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
 
 :root {
   --star-size: 1.25rem;
@@ -5,20 +31,22 @@
   --star-background: #fc0;
   --rating: 0;
   --btn-primary: hsl(220, 100%, 50%);
-  --btn-pirmary-hover: hsl(225, 100%, 40%);
+  --btn-primary-hover: hsl(225, 100%, 40%);
   --btn-extra: hsl(210, 100%, 50%);
+  --scroll-primary: hsl(220, 100%, 50%);
+  --scroll-secondary: #111;
+  --ff: "Montserrat", sans-serif;
+  --gap-size: 1.25rem;
 }
 
+body {
+  font-family: var(--ff);
+}
 main {
   position: relative;
 }
 nav {
-  z-index: 9999;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
+  z-index: 6000;
 }
 
 /*#shop {
@@ -37,6 +65,10 @@ img {
   margin-right: 17rem;
 }
 
+#shop-container > h1 {
+  font-weight: 800;
+}
+
 .shop-row {
   display: flex;
   flex-direction: column;
@@ -45,7 +77,7 @@ img {
 
 .product-type {
   text-transform: capitalize;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .row-items {
@@ -79,7 +111,7 @@ img {
 .product-name {
   grid-area: name;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   align-self: start;
   padding: 0;
   margin: 0;
@@ -97,6 +129,7 @@ img {
 .product-price {
   grid-area: price;
   align-self: end;
+  font-weight: 500;
 }
 
 /* Stars */
@@ -122,8 +155,11 @@ img {
 }
 
 .rating-count {
-  font-size: .9rem;
-  margin-top: .22rem;
+  font-family: var(--ff);
+  font-size: .8rem;
+  margin-top: .275rem;
+  font-weight: 300;
+  letter-spacing: 1px;
 }
 
 .quantity-btn {
@@ -147,7 +183,7 @@ img {
 
 .add-to-cart > button:hover,
 .add-to-cart > button:focus-visible {
-  background-color: var(--btn-pirmary-hover);
+  background-color: var(--btn-primary-hover);
   transition: background-color 150ms ease-in-out;
 }
 
@@ -173,7 +209,7 @@ img {
 }
 .change-quantity > button:hover,
 .change-quantity > button:focus-visible {
-  background-color: var(--btn-pirmary-hover);
+  background-color: var(--btn-primary-hover);
   transition: background-color 150ms ease-in-out;
 }
 .change-quantity > .quantity-remove {
@@ -182,6 +218,7 @@ img {
 }
 .change-quantity > .quantity-number {
   grid-area: count;
+  padding: 0 1.25em;
 }
 .change-quantity > .quantity-add {
   grid-area: increase;
@@ -217,7 +254,7 @@ img {
 }
 .cart-button:hover,
 .cart-button:focus-visible {
-  background-color: var(--btn-pirmary-hover);
+  background-color: var(--btn-primary-hover);
 }
 
 #cart-container {
@@ -317,9 +354,206 @@ img {
   grid-area: checkout;
 }
 
+.cart-submit-btn {
+  text-decoration: none;
+  color: unset;
+  border: 1px solid black;
+  padding: .4em;
+  text-align: center;
+  position: relative;
+  z-index: -1;
+  font-weight: 500;
+}
+
+.cart-submit-btn::after {
+  content: '';
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 5px;
+  background-color: var(--btn-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 300ms ease-in-out;
+}
+.cart-submit-btn:focus-visible::after,
+.cart-submit-btn:hover::after {
+  transform: scaleX(1);
+}
 
 
+/* About Founders */
+.intro-copy {
+    max-width: 40em;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+#about-template [class^="col"] {
+    padding: 2rem;
+}
+
+#about-template .row {
+    padding-top: var(--gap-size);
+}
+
+.profile-col img {
+    object-fit: cover;
+    height: 140px;
+    width: 140px;
+}
+
+.profile-col h2 {
+    max-width: 24em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-col p {
+    max-width: 24em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#modal-container {
+  position: fixed;
+  z-index: 8000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: hsl(0, 0%, 0%, .75);
+  backdrop-filter: blur(10rem);
+  -webkit-backdrop-filter: blur(10rem);
+  display: none;
+  opacity: 0;
+}
+
+#modal-container.show {
+  display: grid;
+  opacity: 1;
+  animation: fadeIn 300ms forwards;
+}
+
+@keyframes fadeIn {
+  100% {
+     opacity: 1;
+     display: grid; 
+    }
+  0% { 
+    opacity: 0;
+    display: none;
+   }
+}
+
+.items-details-container {
+  --padding: 2vh 1vw;
+  --mH: 5vh;
+  background: #fff;
+  padding: var(--padding);
+  margin: var(--mH) 10vw;
+  max-height: calc(100vh - var(--mH));
+  display: flex;
+  flex-direction: column;
+  border-radius: 3vmin;
+  box-shadow: 0px 0px 5px 2px hsl(0, 0%, 100%, .3),
+        inset 0px 0px 5px 2px hsl(0, 0%, 0%, .3);
+}
+
+.item-details-name {
+  text-align: center;
+  padding: 0 1vmin;
+  font-size: calc(.5rem + 3vmin);
+  font-weight: 600;
+}
+
+.items-details-subcontainer {
+  display: grid;
+  grid-template-rows: 1fr max-content max-content;
+  grid-template-areas:
+  'image'
+  'description'
+  'purchase';
+  height: 100%;
+  padding: var(--padding);
+  gap: 1em;
+  font-size: calc(.5rem + 1vmin);
+}
+
+.item-details-image {
+  grid-area: image;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.item-details-description {
+  grid-area: description;
+  padding: var(--padding);
+  place-self: center;
+}
+
+.item-details-purchase {
+  grid-area: purchase;
+  display: flex;
+  flex-direction: row;
+  align-self: end;
+  padding: var(--padding);
+}
+
+.item-details-price::before {
+  content: '$';
+}
+@media screen and (min-width: 60rem) {
+  .items-details-subcontainer {
+    grid-template-rows: 1fr 2fr;
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+    'image purchase'
+    'image description';
+  }
+  .item-details-description {
+    place-self: start;
+  }
+  
+}
+@media screen and (min-width: 90rem) {
+  .items-details-subcontainer {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/*********************************************************************
+                            SCROLL BAR STYLE       
+********************************************************************/
+/* Chrome / Safari */
+::-webkit-scrollbar {
+  display: block;
+  width: 0.6em;
+  height: 0.6em;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scroll-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 100vh;
+  background: var(--scroll-primary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scroll-secondary);
+}
+
+/* Firefox --Early module, not as many options  */
+html {
+  scrollbar-color: var(--scroll-primary) var(--scroll-secondary);
+  scrollbar-width: thin;
+}
 
 
 

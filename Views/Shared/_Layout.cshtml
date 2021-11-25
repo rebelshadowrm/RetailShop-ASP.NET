@@ -33,8 +33,22 @@
             </div>
         </nav>
     </header>
+    <div id="modal-container"></div>
     <div class="container">
         <main role="main" class="pb-3">
+                <template id="item-details-template">
+                    <section class="items-details-container">
+                        <h1 class="item-details-name"></h1>
+                        <div class="items-details-subcontainer">
+                            <div class="item-details-image"></div>
+                            <p class="item-details-description"></p>
+                            <div class="item-details-purchase">
+                                <p class="item-details-price"></p>
+                                <div class="item-details-quantity-container"></div>
+                            </div>
+                        </div>
+                    </section>
+                </template>
             <template id="quantitiy-btn">
                 <div class="quantity-btn">
                     <div class="add-to-cart">
@@ -74,7 +88,7 @@
                         <p class="cart-total">$00.00</p>
                     </div>
                 </div>
-                <a asp-area="" asp-controller="Home" asp-action="Checkout">Checkout</a>
+                <a class="cart-submit-btn" asp-area="" asp-controller="Home" asp-action="Checkout">Checkout</a>
             </section>
             @RenderBody()
         </main>
