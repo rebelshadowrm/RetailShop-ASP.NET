@@ -18,13 +18,13 @@ jobs:
     - name: Build with dotnet
       run: dotnet build . --configuration Release 
     - name: Publish
-      run: dotnet publish . -c Release --no-build -o publishoutput
+      run: dotnet publish . -c Release --no-build -o ./Publish
     - name: Publish to Netlify
       uses: netlify/actions/cli@master #uses Netlify Cli actions
       env: # These are the environment variables added in GitHub Secrets for this repo
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
-          args: deploy --dir=publishoutput --prod #push this folder to Netlify
-          secrets: '["${{ env.NETLIFY_AUTH_TOKEN }}", "${{ env.NETLIFY_SITE_ID }}"]' 
+          args: deploy --dir=./Publish --prod #push this folder to Netlify
+          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'  
           
