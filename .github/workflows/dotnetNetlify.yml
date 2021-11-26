@@ -26,5 +26,5 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
           args: deploy --dir=./Publish --prod #push this folder to Netlify
-          secrets: ["${{ env.NETLIFY_AUTH_TOKEN }}", "${{ env.NETLIFY_SITE_ID }}"] 
+          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'  
           
