@@ -1,0 +1,20 @@
+
+{
+    "region" : "us-east-2",
+    "configuration" : "Debug",
+    "framework"     : "net6.0",
+    "self-contained" : true,
+    "application"    : "AspGroupProject",
+    "environment"    : "AspGroupProject-dev",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-0b45838ef51c60700,sg-068dd95a954eb4885\";\"aws:ec2:vpc,Subnets\"=\"subnet-07f5cde3d573dd2ef\"",
+    "solution-stack"       : "64bit Amazon Linux 2 v2.2.8 running .NET Core",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "aspgroupproject-dev",
+    "instance-type"        : "t3a.medium",
+    "key-pair"             : "",
+    "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
+    "service-role"         : "aws-elasticbeanstalk-service-role",
+    "proxy-server"         : "nginx"
+}
