@@ -9,68 +9,41 @@ class Cart {
 
 document.addEventListener("DOMContentLoaded",  async () => {
     try {
-        const   shopRowTemplate = document.querySelector("#shop-row"),
-                shopContainer = document.querySelector("#shop-container"),
-                data = await fetchJSON(),
-                unique = await getUniqueCategories(data);
 
-        for (let index = 0; index < unique.length; index++) {
-            let rowClone = shopRowTemplate.content.cloneNode(true),
-                category = rowClone.querySelector(".product-type");
-            
-            category.innerText = unique[index];
-            let rowItemContainer = rowClone.querySelector(".row-items"),
-                itemsInCategory = data.filter( ({ category }) => category === unique[index]);
-            
-            await createShopRow(itemsInCategory, rowItemContainer);
-            shopContainer.appendChild(rowClone);  
+        const shopCheck = document.querySelector("#shop-container") ?? undefined;
+        const checkoutCheck = document.querySelector("#checkout-cart-container") ?? undefined;
+
+        if(shopCheck) {
+            await getShopItems();
+            await setShopDetailsOnClick();
+        }
+        if(checkoutCheck) {
+            await lockCartToggle();
+        } else {
+            await setCartToggle();
         }
         
-        //Observer for add to cart / quantity buttons
-        const shop = document.querySelector("#shop-container");
-        const shopQuantityNode = shop.querySelectorAll(".quantity-number");
-        const shopObserverOptions = {
-            childList: true,
-            attributes: true,
-            subtree: false
-        }
-        shopQuantityNode.forEach( e => {
-            let observer = new MutationObserver(showHide);
-            observer.observe(e, shopObserverOptions);
-        });
-
-
+        
+        
         await getCartItems();
-
-        //observer for every time the cart changes
-        const cart = document.querySelector("#cart-container");
-        const cartObserverOptions = {
-            childList: true,
-            attributes: true,
-            subtree: true
-        }
-        //calls cartQuantityObserver every time cart updates
-        let observer = new MutationObserver(cartQuantityObserver);
-        observer.observe(cart, cartObserverOptions);
-
-        const clickableShopItems = document.querySelectorAll(".shop-item");
-        clickableShopItems.forEach(e => {
-            let id = e.querySelector('.item-quantity-container').dataset.item;
-            e.addEventListener('click', (e) => {
-                let parent = e.target.parentElement.parentElement;
-                //call modal
-                console.log(parent);
-                if(parent.querySelector(".quantity-btn")) {
-                itemDetailsModal(id);
-                }
-            });
-        });
-
 
     } catch(err) {
         console.log(err.message);
     }
 });
+
+async function lockCartToggle() {
+    try {
+        let cartBtn = document.querySelector("#toggleCart"),
+            cart = document.querySelector("#cart-container"),
+            main = document.querySelector("main");
+        cart?.classList.add("show");
+        main?.classList.add("cartShow");
+        cartBtn.classList.add("disabled");
+    } catch(err) {
+        console.log(err.message);
+    }
+}
 
 //clears all children
 if( typeof Element.prototype.clearChildren === 'undefined' ) {
@@ -83,8 +56,22 @@ if( typeof Element.prototype.clearChildren === 'undefined' ) {
      });
  }
 
+ async function setShopDetailsOnClick() {
+    const clickableShopItems = document.querySelectorAll(".shop-item");
+    clickableShopItems.forEach(e => {
+        let id = e.querySelector('.item-quantity-container').dataset.item;
+        e.addEventListener('click', (e) => {
+            let parent = e.target.parentElement.parentElement;
+            //call modal
+            if(parent.querySelector(".quantity-btn")) {
+            itemDetailsModal(id);
+            }
+        });
+    });
+ }
+
 async function fetchJSON() {
-    const response = await fetch('./js/storeData.json');
+    const response = await fetch('/js/storeData.json');
     if(!response.ok) {
         const message = `An error has occured: ${response.status}`;
         throw new Error(message);
@@ -93,19 +80,58 @@ async function fetchJSON() {
     return Promise.resolve(json);
 }
 
+async function getShopItems() {
+    try {
+        const   shopRowTemplate = document.querySelector("#shop-row"),
+                shopContainer = document.querySelector("#shop-container"),
+                data = await fetchJSON(),
+                unique = await getUniqueCategories(data);
+
+        for (let index = 0; index < unique.length; index++) {
+            let rowClone = shopRowTemplate.content.cloneNode(true),
+                category = rowClone.querySelector(".product-type");
+
+            category.innerText = unique[index];
+            let rowItemContainer = rowClone.querySelector(".row-items"),
+                itemsInCategory = data.filter( ({ category }) => category === unique[index]);
+
+            await createShopRow(itemsInCategory, rowItemContainer);
+            shopContainer.appendChild(rowClone);  
+        }
+        //Observer for add to cart / quantity buttons
+        const shop = document.querySelector("#shop-container");
+        const shopQuantityNode = shop.querySelectorAll(".quantity-number");
+        const shopObserverOptions = {
+            childList: true,
+            attributes: true,
+            subtree: false
+        }
+        shopQuantityNode.forEach( e => {
+            let observer = new MutationObserver(showHide);
+            observer.observe(e, shopObserverOptions);
+        });
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
 //attaches new observer to the cart
 async function cartQuantityObserver(mutations) {
-    const cart = document.querySelector("#cart-container");
-    const cartQuantityNode = cart.querySelectorAll(".quantity-number");
-    const cartObserverOptions = {
-        childList: true,
-        attributes: true,
-        subtree: true
+    try {
+        const cart = document.querySelector("#cart-container");
+        const cartQuantityNode = cart.querySelectorAll(".quantity-number");
+        const cartObserverOptions = {
+            childList: true,
+            attributes: true,
+            subtree: true
+        }
+        cartQuantityNode.forEach( e => {
+            let observer = new MutationObserver(showHide);
+            observer.observe(e, cartObserverOptions);
+        });
+    } catch (err) {
+        console.log(err.message);
     }
-    cartQuantityNode.forEach( e => {
-        let observer = new MutationObserver(showHide);
-        observer.observe(e, cartObserverOptions);
-    });
 }
 
 // add to cart / quantity buttons event handlers
@@ -135,17 +161,24 @@ async function showHide(mutations) {
     }
 }
 
-// toggle cart btn
-const cartBtn = document.querySelector("#toggleCart");
-cartBtn.addEventListener('click', async ()=> {
-    await toggleCart();
-});
+async function setCartToggle() {
+    try {
+        const cartBtn = document.querySelector("#toggleCart");
+        cartBtn.addEventListener('click', async ()=> {
+            await toggleCart();
+        });
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
 async function toggleCart() {
     let cart = document.querySelector("#cart-container");
-    let shop = document.querySelector("#shop-container")
-    cart.classList.toggle("show");
-    shop.classList.toggle("cartShow")
+    let main = document.querySelector("main")
+    cart?.classList.toggle("show");
+    main?.classList.toggle("cartShow");
 }
+
 
 // creates each shop item for a category row
 async function createShopRow(data, rowItemContainer) {
@@ -331,6 +364,16 @@ const getCartItems = async () => {
                 cartContainer.appendChild(await createCartItem(item[0]));
             }
         }
+        //observer for every time the cart changes
+        const cart = document.querySelector("#cart-container");
+        const cartObserverOptions = {
+            childList: true,
+            attributes: true,
+            subtree: true
+        }
+        //calls cartQuantityObserver every time cart updates
+        let observer = new MutationObserver(cartQuantityObserver);
+        observer.observe(cart, cartObserverOptions);
     } catch (err) {
         console.log(err.message);
     }

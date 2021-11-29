@@ -26,6 +26,8 @@ IMG {
 }
 
 :root {
+  --bg-color: #fff;
+  --text-color: #101010;
   --star-size: 1.25rem;
   --star-color: rgba(0, 0, 0, 0.3);
   --star-background: #fc0;
@@ -34,21 +36,31 @@ IMG {
   --btn-primary-hover: hsl(225, 100%, 40%);
   --btn-extra: hsl(210, 100%, 50%);
   --scroll-primary: hsl(220, 100%, 50%);
-  --scroll-secondary: #111;
+  --scroll-secondary: hsl(0 0% 0% / .15);
   --ff: "Montserrat", sans-serif;
   --gap-size: 1.25rem;
+  
 }
 
 body {
   font-family: var(--ff);
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 main {
   position: relative;
+  padding-top: 5rem;
 }
-nav {
+nav.navbar {
   z-index: 6000;
+  position: fixed;
+  width: 100%;
 }
-
+.logo-img {
+  height: 4rem;
+  margin: -1.7rem 0 -2rem -.5rem;
+  padding: .25rem;
+}
 /*#shop {
     max-height: 75vh !important;
 }*/
@@ -61,8 +73,8 @@ nav {
   flex-direction: column;
   gap: var(--gap);
 }
-#shop-container.cartShow {
-  margin-right: 17rem;
+main.cartShow {
+  margin-right: 16rem;
 }
 
 #shop-container > h1 {
@@ -256,6 +268,16 @@ nav {
 .cart-button:focus-visible {
   background-color: var(--btn-primary-hover);
 }
+.cart-button.disabled {
+  filter: grayscale(.85) brightness(.9);
+}
+.cart-button.disabled:hover,
+.cart-button.disabled:focus-visible {
+  background-color: var(--btn-primary);
+  outline: none;
+  border: 0;
+  cursor: unset;
+}
 
 #cart-container {
   position: fixed;
@@ -354,6 +376,10 @@ nav {
   grid-area: checkout;
 }
 
+.payment-cluster-img {
+  padding: .5rem 0 .25rem 0;
+}
+
 .cart-submit-btn {
   text-decoration: none;
   color: unset;
@@ -383,6 +409,75 @@ nav {
   transform: scaleX(1);
 }
 
+/*********************************************************************
+                            Checkout      
+********************************************************************/
+
+/* credit checked */
+#credit:checked~.type-credit-card {
+  display: block;
+}
+#credit:checked~.type-debit-card {
+  display: none;
+}
+#credit:checked~.type-paypal {
+  display: none;
+}
+/* debit checked */
+#debit:checked~.type-credit-card {
+  display: none;
+}
+#debit:checked~.type-debit-card {
+  display: block;
+}
+#debit:checked~.type-paypal {
+  display: none;
+}
+/* paypal checked */
+#paypal:checked~.type-credit-card {
+  display: none;
+}
+#paypal:checked~.type-debit-card {
+  display: none;
+}
+#paypal:checked~.type-paypal {
+  display: block;
+}
+.custom-control-input {
+  height: 1px;
+  width: 1px;
+  opacity: 0
+}
+.custom-control-input:focus-visible+label {
+  box-shadow: 0px 0px 0px 5px var(--bg-color),
+              0px 0px 0px 6px var(--text-color);
+}
+.custom-control-label {
+  margin: 0 1.5em 1em -.375em;
+  user-select: none;
+  cursor: pointer;
+}
+.custom-control-input:checked+label {
+  font-weight: 600;
+  position: relative;
+  z-index: -1;
+}
+.custom-control-input+label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1px;
+  height: 2px;
+  background-color: #333;
+  z-index: 1;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.custom-control-input:checked+label::after {
+  transform: scaleX(1);
+  transition: transform 300ms ease-in-out;
+}
 
 /* About Founders */
 .intro-copy {

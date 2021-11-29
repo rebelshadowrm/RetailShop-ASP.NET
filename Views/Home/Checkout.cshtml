@@ -4,28 +4,8 @@
 
 <div id="checkout-cart-container">
     <div class="checkout-cart row">
-        <div id="checkout-cart" class="col-md-4 order-md-2 mb-4">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">3</span>
-            </h4>
-            <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-condensed checkout-cart-item">
-                <div>
-                <h6 class="my-0 checkout-product-name">Product name</h6>
-                <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted checkout-product-price">$0</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between checkout-total-price">
-                <span>Total (USD)</span>
-                <strong>$0</strong>
-            </li>
-            </ul>
 
- 
-        </div>
-        <div class="col-md-8 order-md-1">
+        <div class="col-md-12 order-md-1">
             <h4 class="mb-3">Billing address</h4>
             <form class="needs-validation" novalidate="">
             <div class="row">
@@ -89,82 +69,150 @@
             </div>
             
             <hr class="mb-4">
+            <div class="payment">
+                <h4 class="mb-3">Payment</h4>
 
-            <h4 class="mb-3">Payment</h4>
-
-            <div class="d-block my-3">
-                <div class="custom-control custom-radio">
                 <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
                 <label class="custom-control-label" for="credit">Credit card</label>
-                </div>
-                <div class="custom-control custom-radio">
+
                 <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
                 <label class="custom-control-label" for="debit">Debit card</label>
-                </div>
-                <div class="custom-control custom-radio">
+
                 <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
                 <label class="custom-control-label" for="paypal">Paypal</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required="">
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                    Name on card is required
-                </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-                <div class="invalid-feedback">
-                    Credit card number is required
-                </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                <label class="d-block mb-2" for="cc-expiration">Expiration</label>
-                <select class="custom-select" id="cc-expiration" required="">
-                    <option selected disabled>MM</option>
-                    <option value="1">01</option>
-                    <option value="2">02</option>
-                    <option value="3">03</option>
-                    <option value="4">04</option>
-                    <option value="5">05</option>
-                    <option value="6">06</option>
-                    <option value="7">07</option>
-                    <option value="8">08</option>
-                    <option value="9">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                </select>
-                <span>/</span>
-                <select id="expiration-date" class="custom-select" required="">
-                    <option>YYYY</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
-                </select>
 
-                <div class="invalid-feedback">
-                    Expiration date required
+                <div class="type-credit-card">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                    <label for="cc-name">Name on card</label>
+                    <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+                    <small class="text-muted">Full name as displayed on card</small>
+                    <div class="invalid-feedback">
+                        Name on card is required
+                    </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                    <label for="cc-number">Credit card number</label>
+                    <input type="text" class="form-control" id="cc-number" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Credit card number is required
+                    </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                    <label class="d-block mb-2" for="cc-expiration">Expiration</label>
+                    <select class="custom-select" id="cc-expiration" required="">
+                        <option selected disabled>MM</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <span>/</span>
+                    <select id="expiration-date" class="custom-select" required="">
+                        <option>YYYY</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Expiration date required
+                    </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                    <label for="cc-expiration">CVV</label>
+                    <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Security code required
+                    </div>
+                    </div>
                 </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                <label for="cc-expiration">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-                <div class="invalid-feedback">
-                    Security code required
+                <div class="type-debit-card">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                    <label for="cc-name">Name on card</label>
+                    <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+                    <small class="text-muted">Full name as displayed on card</small>
+                    <div class="invalid-feedback">
+                        Name on card is required
+                    </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                    <label for="cc-number">Debit card number</label>
+                    <input type="text" class="form-control" id="cc-number" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Credit card number is required
+                    </div>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                    <label class="d-block mb-2" for="cc-expiration">Expiration</label>
+                    <select class="custom-select" id="cc-expiration" required="">
+                        <option selected disabled>MM</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <span>/</span>
+                    <select id="expiration-date" class="custom-select" required="">
+                        <option>YYYY</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+
+                    <div class="invalid-feedback">
+                        Expiration date required
+                    </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                    <label for="cc-expiration">CVV</label>
+                    <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
+                    <div class="invalid-feedback">
+                        Security code required
+                    </div>
+                    </div>
+                </div>
+                </div>
+                <div class="type-paypal">
+                    <a href="#" id="paypal-btn">
+                        <img 
+                        src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" 
+                        alt="Check out with PayPal" />
+                    </a>
                 </div>
             </div>
             <hr class="mb-4">

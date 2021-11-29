@@ -13,7 +13,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Asp_Group_Project</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img class="logo-img"
+                    src="~/img/logo.png"
+                    alt="Department Depot"/>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -77,6 +81,9 @@
                     </div>
                 </template>
                 <div class="cart-numbers">
+                    <img class="payment-cluster-img"
+                    src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/cc-badges-ppppcmcvdam.png" 
+                    alt="Pay with PayPal, PayPal Credit or any major credit card" />
                     <div class="subtotal-group">
                     <h3>Subtotal</h3>
                     <p class="cart-quantity">(1 item)</p>
