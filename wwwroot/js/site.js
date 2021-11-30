@@ -201,7 +201,7 @@ async function showHide(mutations) {
                 if(parseInt(mutation.target.innerText) < 0) {
                     mutation.target.innerText = 0;
                 }
-                removeCartItem(parent.parentElement.dataset.item);
+                await removeCartItem(parent.parentElement.dataset.item);
             } else if (parseInt(mutation.target.innerText) > 0) {
                 changeQuantity.classList.add("show");
                 changeQuantity.classList.remove("hide");
