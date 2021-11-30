@@ -9,6 +9,7 @@ class Cart {
 
 document.addEventListener("DOMContentLoaded",  async () => {
     try {
+        await getCartItems();
 
         const shopCheck = document.querySelector("#shop-container") ?? undefined;
         const checkoutCheck = document.querySelector("#checkout-cart-container") ?? undefined;
@@ -22,10 +23,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
         } else {
             await setCartToggle();
         }
-        
-        
-        
-        await getCartItems();
+
 
     } catch(err) {
         console.log(err.message);
@@ -103,11 +101,10 @@ async function getShopItems() {
         const shopQuantityNode = shop.querySelectorAll(".quantity-number");
         const shopObserverOptions = {
             childList: true,
-            attributes: true,
-            subtree: false
+            attributes: true
         }
-        shopQuantityNode.forEach( e => {
-            let observer = new MutationObserver(showHide);
+        let observer = new MutationObserver(showHide);
+        shopQuantityNode.forEach( e => {   
             observer.observe(e, shopObserverOptions);
         });
     } catch(err) {
@@ -115,28 +112,83 @@ async function getShopItems() {
     }
 }
 
-//attaches new observer to the cart
-async function cartQuantityObserver(mutations) {
+const getCartItems = async () => {
     try {
-        const cart = document.querySelector("#cart-container");
-        const cartQuantityNode = cart.querySelectorAll(".quantity-number");
-        const cartObserverOptions = {
-            childList: true,
-            attributes: true,
-            subtree: true
+        let cartItems = await getCartItemsJSON(),
+            cartContainer = document.querySelector(".cart-items");
+        for (let index = 0; index < cartItems?.length; index++) {
+            let prodId = cartItems[index].productId,
+                json = await fetchJSON();
+            if(await hasUniqueCartId(prodId)) {
+                let item = json.filter( ({ id }) => id === parseInt(prodId));
+                cartContainer.appendChild(await createCartItem(item[0]));
+            }
         }
-        cartQuantityNode.forEach( e => {
-            let observer = new MutationObserver(showHide);
-            observer.observe(e, cartObserverOptions);
+        //observer for every time the cart changes
+        let cartItemContainer = document.querySelector(".cart-items"),
+            observer = new MutationObserver(showHide);
+        observer.observe(cartItemContainer, {
+            childList: true,
+            subtree: true,
+            characterData: true
         });
+        await updateCartBottom();
+
     } catch (err) {
         console.log(err.message);
     }
 }
 
+async function updateCartBottom() {
+    try {
+        let quantityField = document.querySelector(".cart-quantity"),
+        subtotalField = document.querySelector(".cart-subtotal"),
+        taxesField = document.querySelector(".cart-taxes"),
+        totalField = document.querySelector(".cart-total"),
+        items = await getCartItemsJSON(),
+        json = await fetchJSON(),
+        quantity = 0,
+        subtotal = 0,
+        taxes = 0.07,
+        total = 0,
+        checkout = document.querySelector("#checkout-cart-container") ?? undefined;
+
+        items.forEach( e => {
+            let item = json.filter( ({ id }) => id === parseInt(e.productId));
+            item = item[0];
+            quantity += parseInt(e.quantity, 10);
+            subtotal += item.price * e.quantity;
+        });
+        taxes = subtotal * taxes;
+        total = taxes + subtotal;
+        if (quantityField.innerText != quantity) {
+            if(parseInt(quantity) === 1) {
+                quantityField.innerText = `(${quantity} item)`;
+            } else {
+                quantityField.innerText = `(${quantity} items)`;
+            }
+            subtotalField.innerText = `$${convertToMoney(subtotal)}`;
+            taxesField.innerText = 'Calculated at checkout';
+            totalField.innerText = 'See at checkout';
+            if(checkout) {
+            taxesField.innerText = `$${convertToMoney(taxes)}`;
+            totalField.innerText = `$${convertToMoney(total)}`;
+            }
+        }
+    } catch(err) {
+        console.log(err.message);
+    }
+}
+
+
+function convertToMoney(val){
+    return (Math.floor(val*100).toFixed(0)/100).toFixed(2);
+}
+
 // add to cart / quantity buttons event handlers
 async function showHide(mutations) {  
     for (let mutation of mutations) {
+        console.log(mutation);
         if (mutation.target.matches(".quantity-number")) {
             let parent = mutation.target.parentElement.parentElement;
             let changeQuantity = parent.querySelector(".change-quantity");
@@ -156,7 +208,8 @@ async function showHide(mutations) {
                 addToCart.classList.add("hide");
                 addToCart.classList.remove("show");
             }
-            updateQuantity(parent.parentElement.dataset.item, mutation.target.innerText);
+            await updateQuantity(parent.parentElement.dataset.item, mutation.target.innerText);
+            await updateCartBottom();
         }
     }
 }
@@ -321,14 +374,12 @@ async function quantityRemove(e) {
     let parent = e.target.parentElement.parentElement;
     let quantity = parent.querySelector(".quantity-number");
     quantity.innerText--;
-    //TODO: update cart call (perhaps just a local storage change)
 }
 
 async function quantityAdd(e) {
     let parent = e.target.parentElement.parentElement;
     let quantity = parent.querySelector(".quantity-number");
     quantity.innerText++;
-    //TODO: update cart call (perhaps just a local storage change)
 }
 
 async function updateQuantity(id, quantity) {
@@ -352,32 +403,7 @@ async function updateQuantity(id, quantity) {
     }
 }
 
-const getCartItems = async () => {
-    try {
-        let cartItems = await getCartItemsJSON(),
-            cartContainer = document.querySelector(".cart-items");
-        for (let index = 0; index < cartItems?.length; index++) {
-            let prodId = cartItems[index].productId,
-                json = await fetchJSON();
-            if(await hasUniqueCartId(prodId)) {
-                let item = json.filter( ({ id }) => id === parseInt(prodId));
-                cartContainer.appendChild(await createCartItem(item[0]));
-            }
-        }
-        //observer for every time the cart changes
-        const cart = document.querySelector("#cart-container");
-        const cartObserverOptions = {
-            childList: true,
-            attributes: true,
-            subtree: true
-        }
-        //calls cartQuantityObserver every time cart updates
-        let observer = new MutationObserver(cartQuantityObserver);
-        observer.observe(cart, cartObserverOptions);
-    } catch (err) {
-        console.log(err.message);
-    }
-}
+
 
 async function addCartItemToCart(productId) {
     try {
