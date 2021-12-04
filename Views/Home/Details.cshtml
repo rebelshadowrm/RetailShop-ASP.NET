@@ -1,27 +1,108 @@
 ﻿
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
 <div id="item-details-container">
 </div>
 
-<template>
+<template id="detail-page-template">
     <div>
         <section>
-            <div class="images-container"></div>
-            <img class="main-image" />
-            <div class="item-card">
-                <h2 class="item-name"></h2>
-                <p class="item-price"></p>
-                <div class="item-quantity-container"></div>
+            <div class="main-image"></div>
+            <div class="item-card-container"></div>
+        </section>
+        <section class="item-info-container">
+            <input id="Description" checked name="itemInfo" type="radio" class="itemInfo-input">
+            <label class="itemInfo-label" for="Description">Description</label>
+
+            <input id="Specifications" name="itemInfo" type="radio" class="itemInfo-input">
+            <label class="itemInfo-label" for="Specifications">Specifications</label>
+
+            <input id="Reviews" name="itemInfo" type="radio" class="itemInfo-input">
+            <label class="itemInfo-label" for="Reviews">Reviews</label>
+
+            <div class="item-description-container"></div>
+            <div class="item-specs-container"></div>
+            <div class="item-comment-container">
+                @if (this.User.IsInRole("Admin") || this.User.IsInRole("Customer")) 
+                {
+                    <div class="comment create-comment">
+                        <div class="comment-info">
+                            <input class="comment-name" type="text" placeholder="title">
+                            <select class="stars-rating" name="rating" id="rating">
+                            <option value="5">★★★★★</option>
+                            <option value="4">★★★★☆</option>
+                            <option value="3">★★★☆☆</option>
+                            <option value="2">★★☆☆☆</option>
+                            <option value="1">★☆☆☆☆</option>
+                            </select>    
+                        </div>
+                        <div class="comment-text">
+                            <textarea placeholder="Write your comment here" class="comment-body edit"></textarea>
+                            <input id="comment-post" type="submit" name="post" value="post" />
+                            <button class="comment-cancel">cancel</button>
+                        </div>
+                    </div>
+                } else
+                {
+                    <div class="comment-login-container">
+                        <h4 class="comment-login-header">Login to add your own review</h4>
+                        <a class="comment-login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                    </div>
+                }
             </div>
         </section>
-        <section>
-            <h3>About this item</h3>
-            <p class="item-details"></p>
-        </section>
+    </div>
+</template>
+<template id="item-card-template">
+    <h2 class="item-name"></h2>
+    <p class="item-price"></p>
+    <div class="item-quantity-container"></div>
+</template>
+<template id="item-description-template">
+    <h3>About this item</h3>
+    <p class="item-description"></p>
+</template>
+<template id="item-comment-template">
+    <div class="comment">
+        <div class="comment-info">
+            <p class="comment-name"></p>
+            <p class="user-name"></p>
+            <div class="Stars"></div>
+        </div>
+        <div class="comment-text">
+            <textarea class="comment-body" readonly></textarea>
+            <div class="edit-delete-comment">
+
+            </div>
+        </div>
+    </div>
+</template>
+<template id="item-specs-template">
+    <h3>Product Details</h3>
+    <div>
+        <strong>Product Dimensions:</strong>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque, laudantium?</p>
+    </div>
+    <div>
+        <strong>Item model number:</strong>
+        <p>Lorem ipsum dolor sit amet.</p>
+    </div>
+    <div>
+        <strong>Department:</strong>
+        <p>Lorem, ipsum.</p>
+    </div>
+    <div>
+        <strong>Date First Available:</strong>
+        <p>December 2, 2021</p>
+    </div>
+    <div>
+        <strong>Manufacturer:</strong>
+        <p>Lorem, ipsum dolor.</p>
+    </div>
+    <div>
+        <strong>ASIN</strong>
+        <p>A##B##C##D#</p>
+    </div>
+    <div>
+        <strong>Best Sellers Rank:</strong>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis, ad?</p>
     </div>
 </template>

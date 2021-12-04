@@ -15,6 +15,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("CommentDb")));
+
 var app = builder.Build();
 
 var host = app.Services.GetRequiredService<IServiceProvider>();
@@ -36,6 +38,38 @@ using (var scope = host.CreateScope())
         logger.LogError(ex, "An error occurred seeding the DB.");
     }
 }
+
+app.MapGet("/api/comments", async (CommentContext db) => await db.Comments.ToListAsync());
+
+app.MapGet("/api/comments/{id}", async (CommentContext db, int id) => await db.Comments.FindAsync(id));
+
+app.MapPost("/api/comments", async (CommentContext db, Comment comment) =>
+{
+    await db.Comments.AddAsync(comment);
+    await db.SaveChangesAsync();
+    Results.Accepted();
+});
+
+app.MapPut("/api/comments/{id}", async (CommentContext db, int id, Comment comment) =>
+{
+    if (id != comment.Id) return Results.BadRequest();
+
+    db.Update(comment);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+app.MapDelete("/api/comments/{id}", async (CommentContext db, int id) =>
+{
+    var comment = await db.Comments.FindAsync(id);
+    if (comment == null) return Results.NotFound();
+
+    db.Comments.Remove(comment);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 
 // Configure the HTTP request pipeline.
