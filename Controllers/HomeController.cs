@@ -24,17 +24,17 @@ namespace Asp_Group_Project.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin, Customer")]
-        public IActionResult Privacy()
+        [Authorize(Roles = "Admin")]
+        public IActionResult SalesTrends()
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin, Customer")]
         public IActionResult Checkout()
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin, Customer")]
         public IActionResult ConfirmCheckout()
         {
             return View();

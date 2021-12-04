@@ -10,12 +10,13 @@
     <script type ="module" src="~/js/site.js" defer ></script>
 </head>
 <body>
+    <button id="toggleMobileCart" class="mobile-cart-btn"><i class="fas fa-shopping-cart" aria-hidden="true"></i></button>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img class="logo-img"
-                    src="~/img/logo.png"
+                    src="~/img/logo/logo.png"
                     alt="Department Depot"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -30,9 +31,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (this.User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SalesTrends">SalesTrends</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                     <button id="toggleCart" class="cart-button"><i class="fas fa-shopping-cart" aria-hidden="true"></i> cart</button>
@@ -54,6 +58,7 @@
                                 <div class="item-details-quantity-container"></div>
                             </div>
                         </div>
+                        <a class="more-details-link">more</a>
                     </section>
                 </template>
             <template id="quantitiy-btn">
