@@ -23,10 +23,10 @@
             <div class="item-comment-container">
                 @if (this.User.IsInRole("Admin") || this.User.IsInRole("Customer")) 
                 {
-                    <div class="comment create-comment">
+                    <div id="create-comment" class="comment create-comment" data-name=@User.Identity?.Name>
                         <div class="comment-info">
-                            <input class="comment-name" type="text" placeholder="title">
-                            <select class="stars-rating" name="rating" id="rating">
+                            <input id="comment-name" class="comment-name" type="text" placeholder="title">
+                            <select id="comment-rating" class="stars-rating" name="rating">
                             <option value="5">★★★★★</option>
                             <option value="4">★★★★☆</option>
                             <option value="3">★★★☆☆</option>
@@ -35,9 +35,10 @@
                             </select>    
                         </div>
                         <div class="comment-text">
-                            <textarea placeholder="Write your comment here" class="comment-body edit"></textarea>
+                            <textarea id="comment-body" placeholder="Write your comment here" class="comment-body"></textarea>
                             <input id="comment-post" type="submit" name="post" value="post" />
-                            <button class="comment-cancel">cancel</button>
+                            <button id="comment-cancel" class="comment-cancel">cancel</button>
+                            <span id="comment-error" data-tooltip=""></span>
                         </div>
                     </div>
                 } else
@@ -69,8 +70,7 @@
         </div>
         <div class="comment-text">
             <textarea class="comment-body" readonly></textarea>
-            <div class="edit-delete-comment">
-
+            <div class="icons">
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
         <p>Lorem, ipsum dolor.</p>
     </div>
     <div>
-        <strong>ASIN</strong>
+        <strong>ASIN:</strong>
         <p>A##B##C##D#</p>
     </div>
     <div>
