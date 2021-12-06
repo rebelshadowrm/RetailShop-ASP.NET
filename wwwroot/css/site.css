@@ -25,6 +25,10 @@ IMG {
   height: auto;
 }
 
+i {
+  pointer-events: none;
+}
+
 :root {
   --bg-color: #e9eef6;
   --text-color: #101010;
@@ -37,6 +41,13 @@ IMG {
   --btn-extra: hsl(210, 100%, 50%);
   --scroll-primary: hsl(220, 100%, 50%);
   --scroll-secondary: hsl(0 0% 0% / .15);
+  --error: #cc0000;
+  --tooltip: #333333e5;
+  --delete-btn: var(--btn-primary);
+  --save-btn: var(--btn-primary);
+  --edit-btn: var(--btn-primary);
+  --edit-btn-active: hsla(130, 81%, 43%, 0.8);
+
   --ff: "Montserrat", sans-serif;
   --gap-size: 1.25rem;
   --border-radius: 20px;
@@ -55,8 +66,11 @@ IMG {
       inset 10px 10px 10px var(--clr-shadow-dark);
   
 }
-
+html {
+  height: 100%;
+}
 body {
+  height: 100%;
   font-family: var(--ff);
   background: var(--bg-color);
   color: var(--text-color);
@@ -313,8 +327,8 @@ nav.navbar {
 
 .mobile-cart-btn {
   position: fixed;
-  top: 86%;
-  right: 6%;
+  bottom: 10vh;
+  right: 5vw;
   z-index: 7000;
   padding: 1rem 1.35rem;
   border-radius: 10px;
@@ -333,34 +347,28 @@ nav.navbar {
   inset 10px 10px 10px hsl(0 0% 0% / .15),
   inset 0px 0px 2px 2px hsl(0, 0%, 0%, .75);
 }
-.mobile-cart-btn.disabled {
-  display: none;
-}
 
 
 #cart-container {
   position: fixed;
-  z-index: 1000;
   background-color: #f8f8f8;
-  border-left: 1px solid #ccc;
   padding: .4em .5em 1em .5em;
-  margin-top: 3.5rem;
-  right: 0;
   top: 0;
-  height: calc(100vh - 3.5rem);
+  left: 0;
   display: grid;
   grid-template-rows: 1fr max-content max-content;
   grid-template-areas:
   'cart-items'
   'totals'
   'checkout';
-  width: min-content;
-
-  transform: translateX(100%);
+  width: 75vw;
+  height: 100%;
+  transform: translateX(200%);
   transition: transform 300ms ease-out;
+  z-index: 6500;
 }
 #cart-container.show {
-  transform: translateX(0);
+  transform: translateX(0%);
   transition: transform 300ms ease-out;
 }
 
@@ -431,10 +439,6 @@ nav.navbar {
 
 .checkout {
   grid-area: checkout;
-}
-
-#checkout-cart-container {
-  margin-right: 14rem;
 }
 
 .payment-cluster-img {
@@ -723,11 +727,13 @@ nav.navbar {
 ********************************************************************/
 #item-details-container {
   box-shadow:
-  -1vmin -1vmin 1vmin hsla(0, 0%, 100%, 0.9),
-  1vmin 1vmin 1vmin hsla(0, 0%, 0%, 0.3),
+  -1vmin -1vmin 1.25vmin hsla(0, 0%, 100%, 0.5),
+  1vmin 1vmin 1vmin hsla(0, 0%, 0%, 0.1),
   inset 0 0 0 1.25vmin hsl(217, 42%, 94%),
-  inset -1.75vmin -1.75vmin .3vmin hsla(0, 0%, 100%, .75), 
-  inset 1.5vmin 1.5vmin 1.5vmin hsla(0, 0%, 0%, 0.3);
+  inset -1.75vmin 0 .75vmin hsla(0, 0%, 100%, .75), 
+  inset 0 -1.75vmin .75vmin hsla(0, 0%, 100%, .75), 
+  inset 1.5vmin 0 1.5vmin hsla(0, 0%, 0%, 0.2),
+  inset 0 1.5vmin 1.5vmin hsla(0, 0%, 0%, 0.2);
   border-radius: var(--border-radius);
   padding: 3rem 1rem;
 }
@@ -887,13 +893,13 @@ nav.navbar {
 }
 .item-specs-container div {
   display: grid;
-  grid-auto-flow: column;
-  gap: 1rem;
-  grid-template-columns: 1fr 2fr;
+  grid-auto-flow: row;
+  gap: .75rem;
+  grid-template-columns: 1fr;
+  font-size: clamp(.75rem, 1.5vw, 1.25rem);
 }
-.item-specs-container div strong {
-  justify-self: end;
-}
+
+
 
 /*********************************************************************
                             Comments       
@@ -905,11 +911,13 @@ nav.navbar {
 }
 
 .comment {
+  min-height: 12rem;
   display: grid;
   grid-auto-flow: row;
   grid-template-columns: 1fr;
   grid-template-rows: max-content 1fr;
-  padding: 1em;
+  padding: 1rem;
+  padding-right: .5rem;
   border-radius: var(--border-radius);
   line-height: 1;
   box-shadow: var(--shadow);
@@ -949,7 +957,7 @@ nav.navbar {
   grid-row: 2/3;
   width: 100%;
   height: 100%;
-  padding: .75rem .25rem;
+  padding: 1rem;
   outline: none;
   border: none;
   resize: none;
@@ -964,17 +972,24 @@ nav.navbar {
   min-height: 20rem;
 }
 
+.comment .comment-text {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  grid-template-rows: 1fr;
+  grid-template-areas: 'body icons';
+}
+
 .create-comment .comment-text {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: max-content 1fr max-content;
   grid-template-rows: 1fr max-content;
   grid-template-areas: 
-  'body body'
-  'post cancel';
+  'body body body'
+  'post error cancel';
   gap: 1rem;
 }
 
-.create-comment .comment-body {
+.comment-body {
   grid-area: body;
 }
 .create-comment #comment-post {
@@ -984,6 +999,86 @@ nav.navbar {
 .create-comment .comment-cancel {
   grid-area: cancel;
   justify-self: end;
+}
+.icons {
+  grid-area: icons;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  padding-left: .5rem;
+}
+.delete {
+  color: var(--delete-btn);
+  padding: .5rem;
+  grid-row: 1/2;
+  border-radius: 10px / 50%;
+  box-shadow: var(--hoverShadow);
+}
+.edit {
+  color: var(--edit-btn);
+  padding: .5rem;
+  grid-row: 2/3;
+  border-radius: 10px / 50%;
+  box-shadow: var(--hoverShadow);
+}
+.edit.active {
+  color: var(--edit-btn-active);
+  box-shadow: var(--focusShadow);
+}
+.save {
+  color: var(--save-btn);
+  padding: .5rem;
+  border-radius: 10px / 50%;
+  box-shadow: var(--hoverShadow);
+  grid-row: 3/4;
+  display: none;
+}
+.save.show {
+  display: block;
+}
+.save.show:hover,
+.save:focus-visible,
+.edit:not(.active):hover,
+.edit:not(.active):focus-visible,
+.delete:hover,
+.delete:focus-visible {
+  border: none;
+  outline: none;
+  box-shadow: 
+  1px 0 2px hsl(0 0% 100% / .3),
+  0 1px 2px hsl(0 0% 100% / .3),
+  -1px 0px 2px hsl(0 0% 0% / .15),
+  0 -1px 2px hsl(0 0% 0% / .15);
+}
+
+.create-comment #comment-error {
+  grid-area: error;
+  place-self: center;
+  position: relative;
+  color: var(--error);
+  text-decoration-style: dotted;
+  text-decoration-thickness: .13rem;
+  text-decoration-color: var(--error);
+  text-decoration-line: underline;
+  cursor: pointer;
+  
+}
+.create-comment #comment-error:hover::after,
+.create-comment #comment-error:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  display: block;
+  white-space: pre-line;
+  width: max-content;
+  bottom: 0;
+  right: -50%;
+  transform: translate(30%, -30%);
+  background: var(--tooltip);
+  color: var(--bg-color);
+  text-shadow: 2px 2px 2px var(--error);
+  padding: .5rem .8rem;
+  pointer-events: none;
 }
 
 .create-comment .comment-cancel,
@@ -1018,12 +1113,13 @@ nav.navbar {
   outline: none;
 }
 
-.comment-body.edit {
+#create-comment .comment-body {
   border-radius: 10px;
   box-shadow: var(--shadow);
-  padding: 1em;
+  width: 100%;
 }
-.comment-body.edit:focus-visible {
+#create-comment .comment-body:focus-visible,
+.editable {
   outline: none;
   box-shadow: var(--focusShadow);
 }
@@ -1103,7 +1199,7 @@ input[type=text].comment-name:focus-visible {
                             Media Queries      
 ********************************************************************/
 
-@media screen and (max-width: 48rem) {
+@media only screen and (max-width: 48rem) {
   .item-info-container {
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: 1fr;
@@ -1119,7 +1215,7 @@ input[type=text].comment-name:focus-visible {
   }
 }
 
-@media screen and (min-width: 37rem) {
+@media only screen and (min-width: 37rem) {
   .cart-button {
     display: block;
   }
@@ -1127,11 +1223,32 @@ input[type=text].comment-name:focus-visible {
     display: none;
   }
   #cart-container {
+    left: unset;
+    right: 0;
+    --m: 3.5rem;
+    z-index: 1000;
+    margin-top: var(--m);
+    height: calc(100% - var(--m));
+    border-left: 1px solid #ccc;
     width: 17rem;
+  }
+  .item-specs-container div {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 2rem;
+    grid-template-columns: 1fr 2fr;
+  }
+  .item-specs-container div strong {
+    justify-self: end;
+    align-self: baseline;
+  }
+  .item-specs-container div p {
+    justify-self: start;
+    align-self: baseline;
   }
 }
 
-@media screen and (min-width: 60rem) {
+@media only screen and (min-width: 60rem) {
   .items-details-subcontainer {
     grid-template-rows: minmax(max-content, 1fr) minmax(max-content, 4fr);
     grid-template-columns: 2fr 3fr;
@@ -1140,20 +1257,16 @@ input[type=text].comment-name:focus-visible {
     'image description';
   }
 }
-
-@media screen and (min-width: 90rem) {
-  .items-details-subcontainer {
-    grid-template-rows: 1fr 4fr;
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media screen and (min-width: 63rem) {
+@media only screen and (min-width: 63rem) {
   main.cartShow {
     margin-right: 16rem;
   }
-  #checkout-cart-container {
-    margin: 0;
+}
+
+@media only screen and (min-width: 90rem) {
+  .items-details-subcontainer {
+    grid-template-rows: 1fr 4fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 

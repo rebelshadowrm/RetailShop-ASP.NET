@@ -47,7 +47,7 @@ app.MapPost("/api/comments", async (CommentContext db, Comment comment) =>
 {
     await db.Comments.AddAsync(comment);
     await db.SaveChangesAsync();
-    Results.Accepted();
+    return Results.Created($"/api/comments/{comment.Id}", comment);
 });
 
 app.MapPut("/api/comments/{id}", async (CommentContext db, int id, Comment comment) =>
