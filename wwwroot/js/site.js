@@ -133,10 +133,12 @@ async function lockCartToggle() {
     try {
         let cartBtn = document.querySelector("#toggleCart"),
             cart = document.querySelector("#cart-container"),
-            main = document.querySelector("main")
+            main = document.querySelector("main"),
+            subBtn = document.querySelector(".cart-submit-btn")
         cart?.classList.add("show")
         main?.classList.add("cartShow")
         cartBtn?.classList.add("disabled")
+        subBtn?.remove()
     } catch(err) {
         console.log(err.message)
     }

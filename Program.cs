@@ -16,7 +16,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("CommentDb")));
-
+builder.Services.AddDbContext<OrderHistoryContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("OrderHistoryDb")));
 var app = builder.Build();
 
 var host = app.Services.GetRequiredService<IServiceProvider>();
