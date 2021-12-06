@@ -348,7 +348,6 @@ nav.navbar {
   inset 0px 0px 2px 2px hsl(0, 0%, 0%, .75);
 }
 
-
 #cart-container {
   position: fixed;
   background-color: #f8f8f8;
@@ -371,8 +370,6 @@ nav.navbar {
   transform: translateX(0%);
   transition: transform 300ms ease-out;
 }
-
-
 
 .cart-items {
   grid-area: cart-items;
@@ -480,6 +477,45 @@ nav.navbar {
                             Checkout      
 ********************************************************************/
 
+#checkout-cart-container input[type=text] {
+  box-shadow: var(--hoverShadow);
+  background-color: inherit;
+  border: none;
+}
+#checkout-cart-container input,
+#checkout-cart-container select {
+  border-radius: 100vw;
+}
+#checkout-cart-container label {
+  margin-left: .75rem;
+}
+#checkout-cart-container input[type=text]:focus-visible {
+  box-shadow: var(--focusShadow);
+  outline: none;
+}
+#checkout-cart-container label {
+  margin-bottom: .5rem;
+  font-weight: 500;
+}
+#checkout-cart-container select {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  box-shadow: 
+  inset -2px 0px 2px var(--clr-shadow-light),
+  inset 0px -2px 2px var(--clr-shadow-light),
+   -2px 0px 2px var(--clr-shadow-light),
+   0px -2px 2px var(--clr-shadow-light),
+  inset 0 0 0 2px var(--bg-color),
+   2px 0px 2px var(--clr-shadow-dark),
+   0px 2px 2px var(--clr-shadow-dark),
+  inset 2px 0px 2px var(--clr-shadow-dark),
+  inset 0px 2px 2px var(--clr-shadow-dark);
+  appearance: none;
+  padding: .5rem 1.15rem;
+}
+
+
 /* credit checked */
 #credit:checked~.type-credit-card {
   display: block;
@@ -508,7 +544,7 @@ nav.navbar {
   display: none;
 }
 #paypal:checked~.type-paypal {
-  display: block;
+  display: grid;
 }
 .custom-control-input {
   height: 1px;
@@ -544,6 +580,28 @@ nav.navbar {
 .custom-control-input:checked+label::after {
   transform: scaleX(1);
   transition: transform 300ms ease-in-out;
+}
+.type-paypal {
+  display: grid;
+  justify-items: start;
+  align-items: center;
+  padding: 3rem 0 5rem 5rem;
+}
+#paypal-btn,
+#checkout-cart-container .btn {
+  border: none;
+  outline: none;
+  border-radius: 100vw;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+#paypal-btn:hover,
+#checkout-cart-container .btn:hover {
+  box-shadow: var(--hoverShadow);
+}
+#paypal-btn:focus-visible,
+#checkout-cart-container .btn:focus-visible {
+  box-shadow: var(--focusShadow);
 }
 
 /* About Founders */
@@ -1246,6 +1304,9 @@ input[type=text].comment-name:focus-visible {
     justify-self: start;
     align-self: baseline;
   }
+  #checkout-cart-container {
+    margin-right: 16rem;
+  }
 }
 
 @media only screen and (min-width: 60rem) {
@@ -1260,6 +1321,9 @@ input[type=text].comment-name:focus-visible {
 @media only screen and (min-width: 63rem) {
   main.cartShow {
     margin-right: 16rem;
+  }
+  #checkout-cart-container {
+    margin-right: 0;
   }
 }
 
