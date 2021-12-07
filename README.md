@@ -14,7 +14,7 @@ Newest up to date website link: http://asp-project.group
 # Members  
 Alex Basine -- Rebelshadowrm  
 Jackson Smith -- jrsmith-6246  
-Jackson B -- ChooeyJr  
+Jackson Beaudette -- ChooeyJr  
 David Nguyen -- DavidN3  
 
 
