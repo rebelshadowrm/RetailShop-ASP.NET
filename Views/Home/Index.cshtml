@@ -3,10 +3,18 @@
 }
 
 <div class="text-center">
-    <!--<div id="shop"></div>-->
-
-    <div id="shop-container">
+    <div class="main-container">
         <h1>Department Depot</h1>
+        <div class="select-sort">
+            <label for="sort">Sort by:</label>
+            <select id="sort" name="sort">
+                <option value="category">Category</option>
+                <option value="rating">Rating</option>
+                <option value="price-asc">Price-Asc</option>
+                <option value="price-dec">Price-Dec</option>
+            </select>
+        </div>
+        <div id="shop-container"></div>
         <template id="shop-row">
             <div class="shop-row">
                 <h2 class="product-type"></h2>
