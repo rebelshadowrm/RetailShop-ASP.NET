@@ -12,8 +12,8 @@ For some reason identity (login/register) doesn't work with previous docker buil
 ~~Website: http://aspgroupproject-dev.us-east-2.elasticbeanstalk.com~~    
 Newest up to date website link: http://asp-project.group  
 # Members  
-Alex Basine -------  rebelshadowrm  
-Jackson Smith ------  jrsmith-6246  
+Alex Basine -------- rebelshadowrm  
+Jackson Smith ------- jrsmith-6246  
 Jackson Beaudette ------  ChooeyJr  
 David Nguyen ------------ DavidN3  
 
