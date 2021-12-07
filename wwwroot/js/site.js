@@ -49,8 +49,10 @@ document.addEventListener("DOMContentLoaded",  async () => {
         
         const shopCheck = document.querySelector("#shop-container") ?? undefined
         if(shopCheck) {
-            await getShopItems()
-            await setShopDetailsOnClick()
+            const preference = await setPreference(),
+                  sort = document.querySelector("#sort")
+            sort.value = preference
+            await setSortListener()
         }
         
         const checkoutCheck = document.querySelector("#checkout-cart-container") ?? undefined
@@ -80,6 +82,52 @@ document.addEventListener("DOMContentLoaded",  async () => {
     }
 })
 
+async function setSortListener() {
+    try {
+    const sortSelect = document.querySelector("#sort"),
+          shopContainer = document.querySelector("#shop-container"),
+          preferences = ['category', 'rating', 'price-asc', 'price-dec']
+    sortSelect.addEventListener('change', async (e) => {
+        let preference = e.target.value
+        if(preferences.includes(preference)) {
+            await shopContainer.clearChildren()
+            if(preference === 'category') await getShopItemsByCategory()
+            if(preference === 'rating') await getShopItemOrganized(preference)
+            if(preference === 'price-asc') await getShopItemOrganized(preference)
+            if(preference === 'price-dec') await getShopItemOrganized(preference)
+            await setSortPreference(preference)
+            await setShopDetailsOnClick()
+        }
+    }, false)
+    } catch {
+        console.log(err.message)
+    }
+}
+
+async function setPreference() {
+    try {
+        const preference = await getSortPreference() ?? 'category'
+        if (preference === 'category') await getShopItemsByCategory()
+        if (preference === 'rating') await getShopItemOrganized(preference)
+        if (preference === 'price-asc') await getShopItemOrganized(preference)
+        if (preference === 'price-dec') await getShopItemOrganized(preference)
+        await setShopDetailsOnClick()
+        await setSortPreference(preference)
+        return Promise.resolve(preference)
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+async function getSortPreference() {
+    let storage = localStorage.getItem("sortPreference")
+    return Promise.resolve(storage)
+}
+async function setSortPreference(preference) {
+    localStorage.setItem("sortPreference", preference)
+    return Promise.resolve(preference)
+}
+
 async function getCartItems() {
     try {
         let cartItems = await getCartItemsJSON(), cartContainer = document.querySelector(".cart-items")
@@ -96,7 +144,26 @@ async function getCartItems() {
     }
 }
 
-async function getShopItems() {
+async function getShopItemOrganized(preference) {
+    try {
+        let items = await fetchJSON(),
+            shop = document.querySelector("#shop-container"),
+            preferences = ['rating', 'price-asc', 'price-dec']
+        shop.innerHTML = `<div class="organized-shop"></div>`
+        let container = document.querySelector('.organized-shop')
+        if(preferences.includes(preference)) {
+            if(preference === 'rating') items.sort( (a , b) => {return b.rating - a.rating})
+            if(preference === 'price-asc') items.sort( (a , b) => {return a.price - b.price})
+            if(preference === 'price-dec') items.sort( (a , b) => {return b.price - a.price})
+            await createShopRow(items, container)
+        }  
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+
+async function getShopItemsByCategory() {
     try {
         let shopRowTemplate = document.querySelector("#shop-row"),
             shopContainer = document.querySelector("#shop-container"),
@@ -495,8 +562,8 @@ async function updateCartItemToStorage(id, quantity) {
     }
 }
 async function getCartItemsJSON() {
-    let storage = localStorage.getItem("cartItems")
-    let cartItems = JSON.parse(storage)
+    let storage = localStorage.getItem("cartItems"),
+        cartItems = JSON.parse(storage)
     return Promise.resolve(cartItems)
 }
 async function setCartItemsJSON(items) {
