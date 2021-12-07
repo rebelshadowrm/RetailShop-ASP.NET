@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded",  async () => {
     try {
         await getCartItems()
 
-        
         const shopCheck = document.querySelector("#shop-container") ?? undefined
         if(shopCheck) {
             const preference = await setPreference(),
@@ -61,7 +60,8 @@ document.addEventListener("DOMContentLoaded",  async () => {
         } else {
             await setCartToggle()
         }
-        
+        updateHidden()
+
         const detailsCheck = document.querySelector("#item-details-container") ?? undefined
         if(detailsCheck) {
             let id = window.location.pathname
@@ -128,22 +128,6 @@ async function setSortPreference(preference) {
     return Promise.resolve(preference)
 }
 
-async function getCartItems() {
-    try {
-        let cartItems = await getCartItemsJSON(), cartContainer = document.querySelector(".cart-items")
-        for (let index = 0; index < cartItems?.length; index++) {
-            let prodId = cartItems[index].productId, json = await fetchJSON()
-            if (await hasUniqueCartId(prodId)) {
-                let item = json.filter(({ id }) => id === parseInt(prodId))
-                cartContainer.appendChild(await createCartItem(item[0]))
-            }
-        }
-        await updateCartBottom()
-    } catch (err) {
-        console.log(err.message)
-    }
-}
-
 async function getShopItemOrganized(preference) {
     try {
         let items = await fetchJSON(),
@@ -162,6 +146,21 @@ async function getShopItemOrganized(preference) {
     }
 }
 
+async function getCartItems() {
+    try {
+        let cartItems = await getCartItemsJSON(), cartContainer = document.querySelector(".cart-items")
+        for (let index = 0; index < cartItems?.length; index++) {
+            let prodId = cartItems[index].productId, json = await fetchJSON()
+            if (await hasUniqueCartId(prodId)) {
+                let item = json.filter(({ id }) => id === parseInt(prodId))
+                cartContainer.appendChild(await createCartItem(item[0]))
+            }
+        }
+        await updateCartBottom()
+    } catch (err) {
+        console.log(err.message)
+    }
+}
 
 async function getShopItemsByCategory() {
     try {
@@ -245,6 +244,7 @@ async function callback(mutations) {
         for (let mutation of mutations) {
             if (mutation.target.matches(".quantity-number")) {
                 await updateQuantityNumber(mutation)
+                await updateHidden()
             }
         }
     } catch(err) {
@@ -294,6 +294,23 @@ async function updateAddBtn(changeQuantity, addToCart) {
         console.log(err.message)
     }
 }
+async function updateHidden() {
+    try {
+        let cart = document.querySelector("#checkout-cart-container") ?? undefined,
+            cartHidden = document.querySelector("#cartItemsJSON"),
+            totalHidden = document.querySelector("#cartTotalPrice"),
+            total = document.querySelector(".cart-total"),
+            items = await getCartItemsJSON() ?? {}
+        if(cart) {
+        cartHidden.innerText = JSON.stringify(items)
+        totalHidden.innerText = total?.innerText ?? 0
+        }
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+
 // listen for add-to-cart / - and + quantity btn clicks
 document.addEventListener('click', async (event) => {
     try {
@@ -505,13 +522,17 @@ window.addEventListener("cartUpdated", async (event) => {
         let itemDetailsQuantity = itemDetailsContainer?.querySelector(`.quantity-number`)
 
         let quantity = item[0]?.quantity ?? 0
-        let shopQuantity = shopItemQuantity?.innerText ?? 0
-        let cartQuantity = cartItemQuantity?.innerText ?? 0
-        let detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
 
-        console.log(`shop: ${shopQuantity}`)
-        console.log(`cart: ${cartQuantity}`)
-        console.log(`detail: ${detailQuantity}`)
+        let checkout = document.querySelector("#checkout-cart-container")
+        if(checkout) {
+            let shopQuantity = shopItemQuantity?.innerText ?? cartQuantity
+            let cartQuantity = cartItemQuantity?.innerText ?? 0
+            let detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
+        } else {
+            let shopQuantity = shopItemQuantity?.innerText ?? 0
+            let cartQuantity = cartItemQuantity?.innerText ?? 0
+            let detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
+        }
 
         if (shopQuantity != cartQuantity   ||
             shopQuantity != detailQuantity ||
@@ -820,7 +841,6 @@ async function commentBoxListeners() {
             if(body.value.trim() === "") errorMsg = bodyError
             if(body.value.trim() === "" && title.value.trim() === "") errorMsg =`${titleError}
             ${bodyError}`
-            console.log(errorMsg)
             error.dataset.tooltip = errorMsg
         }
     })

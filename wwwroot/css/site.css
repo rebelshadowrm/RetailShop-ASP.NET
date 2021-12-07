@@ -33,6 +33,10 @@ select {
   scrollbar-width: thin;
 }
 
+.hidden {
+  display: none !important;
+}
+
 :root {
   --bg-color: #e9eef6;
   --text-color: #101010;
