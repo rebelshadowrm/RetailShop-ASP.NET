@@ -27,11 +27,11 @@
                         <div class="comment-info">
                             <input id="comment-name" class="comment-name" type="text" placeholder="title">
                             <select id="comment-rating" class="stars-rating" name="rating">
-                            <option value="5">★★★★★</option>
-                            <option value="4">★★★★☆</option>
-                            <option value="3">★★★☆☆</option>
-                            <option value="2">★★☆☆☆</option>
-                            <option value="1">★☆☆☆☆</option>
+                                <option value="5">★★★★★</option>
+                                <option value="4">★★★★☆</option>
+                                <option value="3">★★★☆☆</option>
+                                <option value="2">★★☆☆☆</option>
+                                <option value="1">★☆☆☆☆</option>
                             </select>    
                         </div>
                         <div class="comment-text">
@@ -64,9 +64,16 @@
 <template id="item-comment-template">
     <div class="comment">
         <div class="comment-info">
-            <p class="comment-name"></p>
+            <input type="text" class="comment-title" readonly />
             <p class="user-name"></p>
             <div class="Stars"></div>
+        <select class="stars-rating comment-rating hide" name="rating">
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+        </select>
         </div>
         <div class="comment-text">
             <textarea class="comment-body" readonly></textarea>
