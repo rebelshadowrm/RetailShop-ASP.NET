@@ -108,14 +108,14 @@ async function setSuccessfulPaymentListener() {
             let address2 = document.querySelector("#address2")
             let zip = document.querySelector("#zip")
             let state = document.querySelector("#state")
-            const productID
-            const quantity
+            let productID
+            let quantity
 
             let orders = []
             let date = new Date().toLocaleString()
             let username = document.querySelector("#checkout-cart-container").dataset.name 
-            let fullAddress = '${address} ${address2} ${state} , ${zip}'
-            let fullName = '${firstName} ${lastName}'
+            let fullAddress = `${address} ${address2} ${state} , ${zip}`
+            let fullName = `${firstName} ${lastName}`
 
             let cart = await getCartItemsJSON()
 
@@ -186,7 +186,7 @@ async function getShopItemOrganized(preference) {
         shop.innerHTML = `<div class="organized-shop"></div>`
         let container = document.querySelector('.organized-shop')
         if(preferences.includes(preference)) {
-            if(preference === 'rating') items.sort( (a , b) => {return b.rating - a.rating})
+            if(preference === 'rating') items.sort( (a , b) => {return b.rating.rate - a.rating.rate})
             if(preference === 'price-asc') items.sort( (a , b) => {return a.price - b.price})
             if(preference === 'price-dec') items.sort( (a , b) => {return b.price - a.price})
             await createShopRow(items, container)
