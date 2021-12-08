@@ -42,6 +42,22 @@ IMG {
 .phone {
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjI0cHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0cHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxwYXRoIGQ9Ik0xMS41LDEuN2MyLjUsMC4xLDQuMywwLjgsNi4xLDIuMmMyLjIsMS42LDMuNSwzLjksNCw2LjdjMC4xLDAuOCwwLjIsMS40LDAuMiwyLjNjMCwwLjcsMC4xLDAuOSwwLjIsMS4xICAgYzAuMSwwLjIsMC4zLDAuMywwLjQsMC4zYzAuMSwwLDAuMiwwLDAuMi0wLjFjMC4yLTAuMSwwLjMtMC40LDAuMi0wLjdjMC0wLjEtMC4xLTAuMi0wLjEtMC43YzAtMS0wLjEtMS42LTAuMy0yLjQgICBjLTAuNi0zLjEtMi01LjYtNC40LTcuM2MtMi0xLjUtNC0yLjItNi43LTIuNGMtMC44LDAtMC45LTAuMS0wLjktMC4xYy0wLjItMC4yLTAuNS0wLjEtMC43LDAuMUM5LjgsMC45LDkuOCwxLjIsMTAsMS40ICAgQzEwLjQsMS42LDEwLjcsMS43LDExLjUsMS43eiIvPjxwYXRoIGQ9Ik0xNy45LDguNWMwLjUsMC45LDAuOCwyLDAuOCwzLjFjMCwwLjcsMC4xLDEuMywwLjcsMS43YzAuMSwwLDAuMSwwLjEsMC4yLDAuMWMwLjIsMCwwLjQtMC4xLDAuNC0wLjMgICBjMC4xLTAuMiwwLTAuNS0wLjItMC43Yy0wLjEsMC0wLjItMC4xLTAuMi0wLjhjMC0xLjMtMC4zLTIuNi0wLjktMy42Yy0wLjYtMS4yLTEuNi0yLjItMi43LTIuOGMtMS0wLjYtMi40LTEtMy43LTEuMSAgIGMtMC40LDAtMC41LTAuMS0wLjUtMC4yYy0wLjItMC4yLTAuNS0wLjItMC43LDBjLTAuMiwwLjItMC4yLDAuNSwwLDAuN0MxMS4zLDQuOSwxMS44LDUsMTIuMiw1YzEuMiwwLjEsMi40LDAuNSwzLjMsMSAgIEMxNi41LDYuNiwxNy4zLDcuNCwxNy45LDguNXoiLz48cGF0aCBkPSJNMTYuNCwxMC44Yy0wLjEtMC43LTAuMi0xLjItMC40LTEuNmMtMC41LTEtMS4zLTEuNi0yLjctMS43Yy0wLjUtMC4xLTAuNS0wLjEtMC42LTAuMkMxMi41LDcuMSwxMi4yLDcsMTIsNy4yICAgYy0wLjIsMC4yLTAuMiwwLjUtMC4xLDAuN2MwLjMsMC4zLDAuNiwwLjQsMS4yLDAuNWMxLDAuMSwxLjYsMC41LDEuOSwxLjJjMC4yLDAuNCwwLjMsMC44LDAuMywxLjNjMC4xLDAuNSwwLjIsMC45LDAuNSwxLjEgICBjMC4xLDAuMSwwLjIsMC4xLDAuMywwLjFjMC4yLDAsMC4zLTAuMSwwLjQtMC4yYzAuMi0wLjIsMC4xLTAuNS0wLjEtMC43QzE2LjUsMTEuMiwxNi40LDExLjIsMTYuNCwxMC44eiIvPjxwYXRoIGQ9Ik0yMi44LDE3LjhjLTAuMy0wLjMtMS45LTEuNi0yLjYtMi4xYy0wLjYtMC40LTEuNC0wLjktMS45LTEuMWMtMC42LTAuMy0xLjMtMC40LTEuOS0wLjJjLTAuNSwwLjItMC43LDAuNC0xLjMsMS4xICAgYy0wLjMsMC4zLTAuNSwwLjYtMC41LDAuN2MwLDAtMC4xLDAuMS0wLjIsMC4xYy0wLjMsMC4xLTAuOCwwLTEuNy0wLjRjLTAuOC0wLjQtMS40LTAuOS0yLjItMS42Yy0wLjctMC42LTEuMy0xLjQtMS43LTIgICBDOC4zLDExLjUsOCwxMC41LDgsMTAuMUM4LDkuOSw4LDkuNiw4LjEsOS41YzAsMCwwLjEtMC4xLDAuMS0wLjFDOC4zLDkuMyw4LjUsOS4yLDguNyw5QzkuNiw4LjMsOS45LDgsMTAsNy41ICAgYzAuMS0wLjUsMC0xLjEtMC40LTEuOUM5LDQuNCw3LjEsMS44LDYuMywxLjNDNi4yLDEuMiw1LjksMS4xLDUuOCwxQzUuNCwwLjksNC45LDAuOSw0LjYsMC45QzQuMiwxLDMuNywxLjMsMi43LDIgICBDMi4yLDIuNCwxLjQsMy4yLDEuMSwzLjZDMC42LDQuNiwwLjcsNS40LDEuMiw2LjdjMC43LDEuOCwxLjYsMy42LDIuNyw1LjRjMC4yLDAuMywwLjMsMC41LDAuNSwwLjhjMC4yLDAuMywwLjQsMC41LDAuNiwwLjggICBjMS44LDIuNSw0LDQuNiw2LjUsNi4zbDAuMSwwLjFjMC4xLDAuMSwwLjMsMC4yLDAuNCwwLjNsMC4zLDAuMmMwLjIsMC4xLDAuMywwLjIsMC41LDAuM2wyLjgsMS42YzAuMiwwLjEsMC40LDAuMiwwLjYsMC4zbDAuMywwLjEgICBjMC4zLDAuMSwwLjYsMC4zLDAuOSwwLjRjMC42LDAuMiwwLjksMC4zLDEuMywwLjNjMC4xLDAsMC4xLDAsMC4yLDBjMC43LDAsMS4zLTAuMywyLTAuOGMwLjgtMC42LDEuOS0xLjksMi4yLTIuNyAgIEMyMy40LDE5LjIsMjMuMywxOC40LDIyLjgsMTcuOHoiLz48L2c+PC9zdmc+);
 }
+
+.facebook,
+.linked-in,
+.google,
+.twitter,
+.mail,
+.phone {
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  box-shadow: var(--hoverShadow);
+  border-radius: 50%;
+}
 i {
   pointer-events: none;
 }
@@ -69,6 +85,7 @@ select {
   --save-btn: var(--btn-primary);
   --edit-btn: var(--btn-primary);
   --edit-btn-active: hsla(130, 81%, 43%, 0.8);
+  --clr-green: rgb(33, 143, 106);
 
   --ff: "Montserrat", sans-serif;
   --gap-size: 1.25rem;
@@ -94,13 +111,14 @@ select {
                       1. Shop
                       2. Cart
                       3. Checkout
-                      4. About
-                      5. Details Modal
-                      6. Details Page
-                      7. Comments
-                      8. Sales
-                      9. Media Queries
-                      10. Scrollbar
+                      4. Success
+                      5. About
+                      6. Details Modal
+                      7. Details Page
+                      8. Comments
+                      9. Sales
+                      10. Media Queries
+                      11. Scrollbar
 
 ********************************************************************/
 
@@ -752,6 +770,83 @@ input {
 #checkout-cart-container .btn:focus-visible {
   box-shadow: var(--focusShadow);
 }
+/*********************************************************************
+                            Success      
+********************************************************************/
+#success-page-container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-top: 1rem;
+  margin-bottom: 30vmin;
+}
+.advertisement {
+  align-self: center;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+.top-section h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--clr-green);
+}
+.green-check {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptLTEuMjUgMTYuNTE4bC00LjUtNC4zMTkgMS4zOTYtMS40MzUgMy4wNzggMi45MzcgNi4xMDUtNi4yMTggMS40MjEgMS40MDktNy41IDcuNjI2eiIvPjwvc3ZnPg==);
+  filter: invert(1) sepia(1) saturate(10000%) hue-rotate(80deg) brightness(65%);
+  display: inline-block;
+  height: 1.25rem;
+  width: 1.25rem;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  border-radius: 50%;
+}
+.bottom-section {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: 
+  'top right'
+  'bottom .';
+  gap: 1rem;
+}
+.bottom-section > div:first-of-type {
+  grid-area: top;
+}
+.bottom-section a {
+  grid-area: bottom;
+  color: darkcyan;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: .95rem;
+  align-self: center;
+}
+.ordered-item-images {
+  grid-area: right;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.ordered-item-images * {
+  width: 4rem;
+  aspect-ratio: 1;
+}
+
+.bottom-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: green;
+  margin: 0;
+}
+.bottom-section p {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 
 /*********************************************************************
                             About      
@@ -835,20 +930,7 @@ input {
   width: 100%;
   place-items: center;
 }
-.facebook,
-.linked-in,
-.google,
-.twitter,
-.mail,
-.phone {
-  height: 2rem;
-  width: 2rem;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  box-shadow: var(--hoverShadow);
-  border-radius: 50%;
-}
+
 
 /*********************************************************************
                             Details Modal       
