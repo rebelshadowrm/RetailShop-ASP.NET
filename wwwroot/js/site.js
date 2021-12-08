@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
         } else {
             await setCartToggle()
         }
-        updateHidden()
+        
 
         const detailsCheck = document.querySelector("#item-details-container") ?? undefined
         if(detailsCheck) {
@@ -85,6 +85,11 @@ document.addEventListener("DOMContentLoaded",  async () => {
         mobileCartBtn.addEventListener('click', async () => {
             await toggleCart()
         })
+
+        const orderHistory = document.querySelector("#order-history-container")
+        if(orderHistory) {
+            await orderHistoryPage()
+        }
         
         await setObserver()
 
@@ -762,6 +767,34 @@ async function createDetailModal(productId) {
     }
 }
 
+async function getOrderHistoryByUsername(username) {
+    try {
+        const response = await fetch(`/api/orders/${username}`)
+        if(!response.ok) {
+            const message = `An error has occured: ${response.status}`
+            throw new Error(message)
+        }
+        const json = await response.json()
+        return Promise.resolve(json)
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+async function orderHistoryPage() {
+    try {
+        let orderHistoryContainer = document.querySelector("#order-history-container"),
+            orderHistoryTemplate = document.querySelector("#order-history-template"),
+            orderHistoryClone = orderHistoryTemplate.content.cloneNode(true),
+            username = orderHistoryContainer?.dataset.name,
+            items = await getOrderHistoryByUsername(username)
+
+
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
 async function getAllCommentsByProductId(id) {
     try {
         const response = await fetch('/api/comments')
@@ -793,9 +826,10 @@ async function createComment(comment, id = undefined) {
             itemCommentTemplate = document.querySelector("#item-comment-template"),
             itemCommentClone = itemCommentTemplate.content.cloneNode(true),
             commentContainer = itemCommentClone.querySelector(".comment"),
-            commentName = itemCommentClone.querySelector(".comment-name"),
+            commentName = itemCommentClone.querySelector(".comment-title"),
             commentUser = itemCommentClone.querySelector(".user-name"),
             commentRating = itemCommentClone.querySelector(".Stars"),
+            commentRating2 = itemCommentClone.querySelector(".comment-rating"),
             commentBody = itemCommentClone.querySelector(".comment-body"),
             commentId = comment?.id ?? id,
             loggedInUser = document.querySelector("#create-comment")?.dataset.name,
@@ -811,10 +845,13 @@ async function createComment(comment, id = undefined) {
                 <i class="fas fa-save" aria-hidden="true"></i>
             </a>`
 
+        let regex = /.+?(?=@)/
+        let author = comment?.author.match(regex)
         commentContainer.dataset.id = commentId
-        commentName.innerText = comment?.title
-        commentUser.innerText = comment?.author
+        commentName.value = comment?.title
+        commentUser.innerText = author
         commentRating.dataset.rating = comment?.rating
+        commentRating2.value = comment?.rating
         commentRating.style = `--rating: ${comment?.rating}`
         commentBody.innerText = comment?.body
 
@@ -916,29 +953,42 @@ if (event.target.matches('.edit')) {
 async function editBtn(e) {
     e.preventDefault();
     let textArea = e.composedPath()[2].querySelector('.comment-body'),
+        title = e.composedPath()[3].querySelector(".comment-title"),
+        rating = e.composedPath()[3].querySelector(".comment-rating"),
+        stars = e.composedPath()[3].querySelector(".Stars"),
         save = e.target.parentElement.querySelector('.save'),
         edit = e.target
+
     textArea.classList.toggle('editable')
     textArea.readOnly = false
     edit.classList.toggle("active")
     save.classList.toggle("show")
+    title.classList.toggle("editable")
+    title.readOnly = false
+    rating.classList.toggle("hide")
+    stars.classList.toggle("hide")
 }
 
 async function editComment(e) {
     e.preventDefault();
     try {
-    let commentId = e.composedPath()[3].dataset.id,
+    let commentId = e.composedPath()[3]?.dataset.id,
         comment = e.composedPath()[3],
-        productId = document.querySelector('#item-details-container').dataset.id,
-        rating = comment.querySelector('.Stars').dataset.rating,
-        title = comment.querySelector('.comment-name').innerText,
-        author = document.querySelector('#create-comment').dataset.name,
-        body = comment.querySelector('.comment-body').value,
+        productId = document.querySelector('#item-details-container')?.dataset.id,
+        rating = comment.querySelector('.comment-rating')?.value,
+        title = comment.querySelector('.comment-title')?.value,
+        author = document.querySelector('#create-comment')?.dataset.name,
+        body = comment.querySelector('.comment-body')?.value,
         updatedComment = new Comment(productId, rating, title, author, body)
 
     await updateComment(commentId, updatedComment)
     comment.querySelector(".comment-body").classList.toggle("editable")
     comment.querySelector(".comment-body").readOnly = true
+    comment.querySelector(".comment-title").classList.toggle("editable")
+    comment.querySelector(".comment-title").readOnly = true
+    comment.querySelector(".Stars").style = `--rating: ${rating}`
+    comment.querySelector(".Stars").classList.toggle("hide")
+    comment.querySelector(".comment-rating").classList.toggle("hide")
     comment.querySelector(".save").classList.toggle("show")
     comment.querySelector(".edit").classList.toggle("active")
     } catch(err) {
@@ -981,6 +1031,7 @@ async function deleteComment(e) {
                 'content-type': 'application/json'
             }
         }
+
         const response = await fetch(`/api/comments/${id}`, options)
         if(!response.ok) {
             const message = `An error has occured: ${response.status}`
