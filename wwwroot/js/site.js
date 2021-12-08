@@ -16,6 +16,16 @@ class Comment {
         this.body = body
     }
 }
+class Order {
+    constructor(username, fullName, address, date, productID, quantity) {
+        this.username = username
+        this.fullName = fullName
+        this.address = address
+        this.date = date
+        this.productID = parseInt(productID)
+        this.quantity = parseInt(quantity)
+    }
+}
 
 //defines property .clearChildren; clears all children
 if( typeof Element.prototype.clearChildren === 'undefined' ) {
@@ -57,6 +67,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
         const checkoutCheck = document.querySelector("#checkout-cart-container") ?? undefined
         if(checkoutCheck) {
             await lockCartToggle()
+            await setSuccessfulPaymentListener()
         } else {
             await setCartToggle()
         }
@@ -81,6 +92,40 @@ document.addEventListener("DOMContentLoaded",  async () => {
         console.log(err.message)
     }
 })
+
+async function setSuccessfulPaymentListener() {
+    try {
+        const orderButton = document.querySelector("btnOrder")
+        orderButton.addEventListener('click', async () => {
+            let firstName = document.querySelector("#firstName")
+            let lastName = document.querySelector("#lastName")
+            let address = document.querySelector("#address")
+            let address2 = document.querySelector("#address2")
+            let zip = document.querySelector("#zip")
+            let state = document.querySelector("#state")
+            const productID
+            const quantity
+
+            let orders = []
+            let date = new Date().toLocaleString()
+            let username = document.querySelector("#checkout-cart-container").dataset.name 
+            let fullAddress = '${address} ${address2} ${state} , ${zip}'
+            let fullName = '${firstName} ${lastName}'
+
+            let cart = await getCartItemsJSON()
+
+            for (let i = 0; i < cart[i]; i++) {
+                productID = cart[i].productID
+                quantity = cart[i].quantity
+                orders.push(new Order(username, fullName, fullAddress, date, productID, quantity))
+            }
+            console.log(orders)
+
+        })
+    } catch (err) {
+        console.log(err.message)
+    }
+}
 
 async function setSortListener() {
     try {

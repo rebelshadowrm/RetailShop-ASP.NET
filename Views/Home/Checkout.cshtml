@@ -2,7 +2,7 @@
     ViewData["Title"] = "Check Out Page";
 }
 
-<div id="checkout-cart-container">
+<div id="checkout-cart-container" data-name=@User.Identity?.Name>
     <div class="checkout-cart row">
 
         <div class="col-md-12 order-md-1">
@@ -891,7 +891,7 @@
                 <div id="cartTotalPrice" class="hidden"></div>
 
                 <div class="form-actions">
-                    <button class="btn btn-primary btn-lg btn-block w-100 mb-5" type="submit">Confirm and Pay</button>
+                    <button id="btnOrder"class="btn btn-primary btn-lg btn-block w-100 mb-5" type="submit">Confirm and Pay</button>
                 </div>
 
             </form>
