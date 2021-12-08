@@ -72,6 +72,21 @@ app.MapDelete("/api/comments/{id}", async (CommentContext db, int id) =>
 });
 
 
+app.MapGet("/api/orders", async (OrderHistoryContext db) => await db.OrderHistory.ToListAsync());
+
+app.MapGet("/api/orders/{username}", async (OrderHistoryContext db, string username) => await db.OrderHistory.Where(x => x.Username == username).ToListAsync());
+
+app.MapPost("/api/orders", async (OrderHistoryContext db, List<Order> orders) =>
+{
+    orders.ForEach(async delegate (Order order)
+    {
+        await db.OrderHistory.AddAsync(order);
+    });
+    await db.SaveChangesAsync();
+    return Results.Created($"orders{orders}", orders);
+});
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

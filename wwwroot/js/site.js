@@ -27,6 +27,31 @@ class Order {
     }
 }
 
+const shopItems = {
+    items: [
+
+    ],
+    add: async (item) => {
+
+    },
+    categorySort: async () => {
+
+    },
+    itemsByCategory: [
+
+    ],
+    ratingSort: async () => {
+
+    },
+    priceAscSort: async () => {
+
+    },
+    priceDecSort: async () => {
+
+    }
+
+}
+
 //defines property .clearChildren; clears all children
 if( typeof Element.prototype.clearChildren === 'undefined' ) {
     Object.defineProperty(Element.prototype, 'clearChildren', {
@@ -90,6 +115,15 @@ document.addEventListener("DOMContentLoaded",  async () => {
         if(orderHistory) {
             await orderHistoryPage()
         }
+
+        const successCheck = document.querySelector("#success-page-container")
+        if(successCheck) {
+            let orders = sessionStorage.getItem("orders")
+            await displaySuccessPage(orders)
+        } else {
+
+        }
+        
         
         await setObserver()
 
@@ -100,34 +134,71 @@ document.addEventListener("DOMContentLoaded",  async () => {
 
 async function setSuccessfulPaymentListener() {
     try {
-        const orderButton = document.querySelector("btnOrder")
-        orderButton.addEventListener('click', async () => {
-            let firstName = document.querySelector("#firstName")
-            let lastName = document.querySelector("#lastName")
-            let address = document.querySelector("#address")
-            let address2 = document.querySelector("#address2")
-            let zip = document.querySelector("#zip")
-            let state = document.querySelector("#state")
-            let productID
-            let quantity
+        const orderButton = document.querySelector("#btnOrder")
+        orderButton.addEventListener('click', async (e) => {
+            e.preventDefault()
+            let firstName = document.querySelector("#firstName")?.value,
+                lastName = document.querySelector("#lastName")?.value,
+                address = document.querySelector("#address")?.value,
+                address2 = document.querySelector("#address2")?.value,
+                zip = document.querySelector("#zip")?.value,
+                state = document.querySelector("#state")?.value,
+                productId,
+                quantity,
+                orders = [],
+                date = new Date().toISOString(),
+                username = document.querySelector("#checkout-cart-container")?.dataset.name ,
+                fullAddress = `${address} ${address2} ${state} , ${zip}`,
+                fullName = `${firstName} ${lastName}`,
+                cart = await getCartItemsJSON()
 
-            let orders = []
-            let date = new Date().toLocaleString()
-            let username = document.querySelector("#checkout-cart-container").dataset.name 
-            let fullAddress = `${address} ${address2} ${state} , ${zip}`
-            let fullName = `${firstName} ${lastName}`
-
-            let cart = await getCartItemsJSON()
-
-            for (let i = 0; i < cart[i]; i++) {
-                productID = cart[i].productID
+            for (let i = 0; i < cart.length; i++) {
+                productId = cart[i].productId
                 quantity = cart[i].quantity
-                orders.push(new Order(username, fullName, fullAddress, date, productID, quantity))
+                orders.push(new Order(username, fullName, fullAddress, date, productId, quantity))
             }
-            console.log(orders)
-
+            let response = await finalizeOrder(orders)
+            if(response.status === 201) {
+                sessionStorage.setItem("orders", JSON.stringify(orders))
+                window.location.replace("/Home/Success")
+            }
         })
     } catch (err) {
+        console.log(err.message)
+    }
+}
+
+async function displaySuccessPage(json) {
+    try {
+        let successPageContainer = document.querySelector("#success-page-container"),
+            successPageTemplate = document.querySelector("#success-page-template"),
+            successPageClone = successPageTemplate.content.cloneNode(true),
+            orders = await JSON.parse(json)
+        
+        successPageContainer.append(successPageClone)
+        console.log(orders)
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+async function finalizeOrder(orders) {
+    try {
+        let options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            body:JSON.stringify(orders)
+        }
+        const response = await fetch('/api/orders', options)
+        if(!response.ok) {
+            const message = `An error has occured: ${response.status}`
+            throw new Error(message)
+        }
+        return Promise.resolve(response)
+    } catch(err) {
         console.log(err.message)
     }
 }
@@ -198,7 +269,8 @@ async function getShopItemOrganized(preference) {
 
 async function getCartItems() {
     try {
-        let cartItems = await getCartItemsJSON(), cartContainer = document.querySelector(".cart-items")
+        let cartItems = await getCartItemsJSON(),
+            cartContainer = document.querySelector(".cart-items")
         for (let index = 0; index < cartItems?.length; index++) {
             let prodId = cartItems[index].productId, json = await fetchJSON()
             if (await hasUniqueCartId(prodId)) {
@@ -716,7 +788,6 @@ async function itemDetailsPage(productId) {
     }
 }
 
-//Item details modal
 async function itemDetailsModal(id) {
     try {
         const modal = document.querySelector("#modal-container")

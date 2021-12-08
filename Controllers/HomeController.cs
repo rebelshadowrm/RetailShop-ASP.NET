@@ -35,7 +35,7 @@ namespace Asp_Group_Project.Controllers
             return View();
         }
         [Authorize(Roles = "Admin, Customer")]
-        public IActionResult ConfirmCheckout()
+        public IActionResult Success()
         {
             return View();
         }
