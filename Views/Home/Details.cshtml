@@ -23,7 +23,11 @@
             <div class="item-comment-container">
                 @if (this.User.IsInRole("Admin") || this.User.IsInRole("Customer")) 
                 {
-                    <div id="create-comment" class="comment create-comment" data-name=@User.Identity?.Name>
+                    <section class="show-comment-create">
+                        <h4>Add your own review?</h4>
+                        <button id="openCommentCreate">create</button>
+                    </section>
+                    <div id="create-comment" class="comment create-comment hidden" data-name=@User.Identity?.Name>
                         <div class="comment-info">
                             <input id="comment-name" class="comment-name" type="text" placeholder="title">
                             <select id="comment-rating" class="stars-rating" name="rating">

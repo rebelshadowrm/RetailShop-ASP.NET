@@ -1520,6 +1520,35 @@ input[type="text"].comment-name:focus-visible {
   color: var(--text-color);
 }
 
+.show-comment-create {
+  display: grid;
+  grid-auto-flow: column;
+  place-items: center;
+  padding: 2rem;
+}
+.show-comment-create h4 {
+  font-size: calc(.75rem + 1.15vmin);
+  font-weight: 600;
+}
+#openCommentCreate {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: .55rem 1.55rem;
+  border-radius: 100vw;
+  box-shadow: var(--shadow);
+}
+#openCommentCreate:hover {
+  box-shadow: var(--hoverShadow);
+  background-color: inherit;
+}
+#openCommentCreate:focus-visible {
+  box-shadow: var(--focusShadow);
+  background-color: inherit;
+}
+
 /*********************************************************************
                               Sales      
 ********************************************************************/
