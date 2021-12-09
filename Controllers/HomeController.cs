@@ -25,7 +25,7 @@ namespace Asp_Group_Project.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult SalesTrends()
+        public IActionResult Sales()
         {
             return View();
         }

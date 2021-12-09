@@ -32,10 +32,15 @@
                         Please enter your shipping address.
                     </div>
                 </div>
-
-                <div class="mb-3">
+                <div class="row">
+                <div class="col-md-7 mb-3">
                     <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
                     <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="City">
+                </div>
                 </div>
 
                 <div class="row">
@@ -732,10 +737,10 @@
                 <div class="shipping-method-group">
                     <label class="shipping-method-label" for="shippingMethod">Choose a shipping method</label>
                     <select class="shipping-method" name="shippingMethod" id="shippingMethod">
-                        <option value="0.00">&emsp;7-11 day&emsp;&emsp;&emsp;&emsp;$0.00&emsp;</option>
-                        <option value="7.68">&emsp;&emsp; 6 day&emsp;&emsp;&emsp;&emsp;$7.68&emsp;</option>
-                        <option value="15.90">&emsp;&emsp; 2 day&emsp;&emsp;&emsp;&emsp;$15.90&emsp;</option>
-                        <option value="32.45">&ensp;overnight&emsp;&emsp;&emsp;&emsp;$32.45&emsp;</option>
+                        <option value='{"id":1, "price":0.00, "days": 9}'>&emsp;7-11 day&emsp;&emsp;&emsp;&emsp;$0.00&emsp;</option>
+                        <option value='{"id":2, "price":7.68, "days": 6}'>&emsp;&emsp; 6 day&emsp;&emsp;&emsp;&emsp;$7.68&emsp;</option>
+                        <option value='{"id":3, "price":15.90, "days": 2}'>&emsp;&emsp; 2 day&emsp;&emsp;&emsp;&emsp;$15.90&emsp;</option>
+                        <option value='{"id":4, "price":32.45, "days": 1}'>&ensp;overnight&emsp;&emsp;&emsp;&emsp;$32.45&emsp;</option>
                     </select>
                 </div>
                 <hr class="mb-4">
