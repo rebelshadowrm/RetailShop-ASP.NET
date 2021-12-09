@@ -26,31 +26,6 @@ class Order {
     }
 }
 
-const shopItems = {
-    items: [
-
-    ],
-    add: async (item) => {
-
-    },
-    categorySort: async () => {
-
-    },
-    itemsByCategory: [
-
-    ],
-    ratingSort: async () => {
-
-    },
-    priceAscSort: async () => {
-
-    },
-    priceDecSort: async () => {
-
-    }
-
-}
-
 //defines property .clearChildren; clears all children
 if( typeof Element.prototype.clearChildren === 'undefined' ) {
     Object.defineProperty(Element.prototype, 'clearChildren', {
@@ -97,7 +72,6 @@ document.addEventListener("DOMContentLoaded",  async () => {
             await setCartToggle()
         }
         
-
         const detailsCheck = document.querySelector("#item-details-container") ?? undefined
         if(detailsCheck) {
             let id = window.location.pathname
@@ -114,22 +88,20 @@ document.addEventListener("DOMContentLoaded",  async () => {
         const orderHistory = document.querySelector("#order-history-container")
         if(orderHistory) await orderHistoryPage()
 
-
         const successCheck = document.querySelector("#success-page-container")
         if(successCheck) {
             let orders = sessionStorage.getItem("orders"),
                 shipping = sessionStorage.getItem("shipping")
+            localStorage.removeItem("cartItems")
             orders = JSON.parse(orders)
             shipping = JSON.parse(shipping)
             await displaySuccessPage(orders, shipping)
-        } else {
-
         }
+
         const checkTable = document.querySelector("#salesTable")
         if(checkTable) await getTable()
         
         await setObserver()
-
 
     } catch(err) {
         console.log(err.message)
@@ -152,36 +124,107 @@ async function setSuccessfulPaymentListener() {
         const orderButton = document.querySelector("#btnOrder")
         orderButton.addEventListener('click', async (e) => {
             e.preventDefault()
-            let firstName = document.querySelector("#firstName")?.value,
-                lastName = document.querySelector("#lastName")?.value,
-                address = document.querySelector("#address")?.value,
-                address2 = document.querySelector("#address2")?.value,
-                zip = document.querySelector("#zip")?.value,
-                state = document.querySelector("#state")?.value,
-                city = document.querySelector("#city")?.value,
-                shipping = document.querySelector("#shippingMethod").value,
-                productId,
-                quantity,
-                orders = [],
-                date = moment().toISOString(),
-                username = document.querySelector("#checkout-cart-container")?.dataset.name ,
-                fullAddress = `${address} ${address2} ${city}, ${state} , ${zip}`,
-                fullName = `${firstName} ${lastName}`,
-                cart = await getCartItemsJSON()
-
-            for (let i = 0; i < cart.length; i++) {
-                productId = cart[i].productId
-                quantity = cart[i].quantity
-                orders.push(new Order(username, fullName, fullAddress, date, productId, quantity))
-            }
-            let response = await finalizeOrder(orders)
-            if(response.status === 201) {
-                sessionStorage.setItem("orders", JSON.stringify(orders))
-                sessionStorage.setItem("shipping", shipping)
-                window.location.replace("/Home/Success")
-            }
+            await finishCheckout()
         })
+        const applePay = document.querySelector("#applepay-btn")
+        applePay.addEventListener('click', async (e) => {
+            e.preventDefault()
+            await finishCheckout()
+        })
+        const paypal = document.querySelector("#paypal-btn")
+        paypal.addEventListener('click', async (e) => {
+            e.preventDefault()
+            await finishCheckout()
+        })
+    
     } catch (err) {
+        console.log(err.message)
+    }
+}
+
+async function finishCheckout() {
+    try {
+        let firstName = document.querySelector("#firstName"),
+            lastName = document.querySelector("#lastName"),
+            address = document.querySelector("#address"),
+            address2 = document.querySelector("#address2")?.value,
+            zip = document.querySelector("#zip"),
+            state = document.querySelector("#state"),
+            city = document.querySelector("#city"),
+            shipping = document.querySelector("#shippingMethod").value,
+            productId,
+            quantity,
+            orders = [],
+            date = moment().toISOString(),
+            username = document.querySelector("#checkout-cart-container")?.dataset.name ,
+            fullAddress = `${address?.value} ${address2} ${city?.value}, ${state?.value} , ${zip?.value}`,
+            fullName = `${firstName?.value} ${lastName?.value}`,
+            cart = await getCartItemsJSON(),
+            isValid = false
+
+    isValid = await orderValidation(firstName, lastName, address, city, zip) ?? false
+    if(isValid) {
+        for (let i = 0; i < cart.length; i++) {
+            productId = cart[i].productId
+            quantity = cart[i].quantity
+            orders.push(new Order(username, fullName, fullAddress, date, productId, quantity))
+        }
+        let response = await finalizeOrder(orders)
+        if(response.status === 201) {
+            sessionStorage.setItem("orders", JSON.stringify(orders))
+            sessionStorage.setItem("shipping", shipping)
+            window.location.replace("/Home/Success")
+        }
+    }
+    } catch(err) {
+        console.log(err.message)
+    }
+}
+
+async function orderValidation(firstName, lastName, address, city, zip) {
+    try {
+        let firstNameError = firstName.parentElement.querySelector(".invalid-feedback"),
+            lastNameError = lastName.parentElement.querySelector(".invalid-feedback"),
+            addressError = address.parentElement.querySelector(".invalid-feedback"),
+            cityError = city.parentElement.querySelector(".invalid-feedback"),
+            zipError = zip.parentElement.querySelector(".invalid-feedback"),
+            errors = 0
+
+        firstNameError.classList.remove("show")
+        lastNameError.classList.remove("show")
+        addressError.classList.remove("show")
+        cityError.classList.remove("show")
+        zipError.classList.remove("show")
+        
+        if(firstName?.value.trim() === "")  {
+            firstNameError.classList.add("show")
+            errors++
+        }
+        if(lastName?.value.trim() === "") {
+            lastNameError.classList.add("show") 
+            errors++
+        }    
+        if(address?.value.trim() === "") {
+            addressError.classList.add("show")
+            errors++
+        }
+        if(city?.value.trim() === "") {
+            cityError.classList.add("show") 
+            errors++
+        } 
+        if(zip?.value.trim().length !== 5) {
+            zipError.classList.add("show")
+            errors++
+        }
+        if(isNaN(zip?.value.trim())) {
+            zipError.classList.add("show") 
+            errors++
+        } 
+        if(errors === 0) {
+            return true
+        }
+        return false
+    } catch(err) {
         console.log(err.message)
     }
 }
@@ -333,6 +376,7 @@ async function getShopItemsByCategory() {
         console.log(err.message)
     }
 }
+
 async function setShopDetailsOnClick() {
     const clickableShopItems = document.querySelectorAll(".shop-item")
     clickableShopItems.forEach(e => {
@@ -369,6 +413,7 @@ async function lockCartToggle() {
         console.log(err.message)
     }
 }
+
 async function setCartToggle() {
     try {
         const cartBtn = document.querySelector("#toggleCart")
@@ -379,6 +424,7 @@ async function setCartToggle() {
         console.log(err.message)
     }
 }
+
 async function toggleCart() {
     let cart = document.querySelector("#cart-container")
     let main = document.querySelector("main")
@@ -398,7 +444,7 @@ async function setObserver() {
         console.log(err.message)
     }
 }
-// add to cart / quantity buttons event handlers
+
 async function callback(mutations) {  
     try {
         for (let mutation of mutations) {
@@ -411,6 +457,7 @@ async function callback(mutations) {
         console.log(err.message)
     }
 }
+
 async function updateQuantityNumber(mutation) {
     try {
         let parent = mutation.target.parentElement.parentElement,
@@ -431,7 +478,7 @@ async function updateQuantityNumber(mutation) {
         console.log(err.message)
     }
 }
-//helper functions that act like more specific toggles
+
 async function updateRemoveBtn(changeQuantity, addToCart) {
     try {
         changeQuantity.classList.add("hide")
@@ -442,6 +489,7 @@ async function updateRemoveBtn(changeQuantity, addToCart) {
         console.log(err.message)
     }
 }
+
 async function updateAddBtn(changeQuantity, addToCart) {
     try {
         changeQuantity.classList.add("show")
@@ -452,6 +500,7 @@ async function updateAddBtn(changeQuantity, addToCart) {
         console.log(err.message)
     }
 }
+
 async function updateHidden() {
     try {
         let cart = document.querySelector("#checkout-cart-container") ?? undefined,
@@ -467,7 +516,6 @@ async function updateHidden() {
         console.log(err.message)
     }
 }
-
 
 // listen for add-to-cart / - and + quantity btn clicks
 document.addEventListener('click', async (event) => {
@@ -486,6 +534,7 @@ document.addEventListener('click', async (event) => {
         console.log(err.message)
     }
 }, false)
+
 async function addToCart(e) {
     try {
         let parent = e.target.parentElement.parentElement,
@@ -502,6 +551,7 @@ async function addToCart(e) {
         console.log(err.message)
     }
 }
+
 async function quantityRemove(e) {
     try {
         let parent = e.target.parentElement.parentElement,
@@ -511,6 +561,7 @@ async function quantityRemove(e) {
         console.log(err.message)
     }
 }
+
 async function quantityAdd(e) {
     try {
         let parent = e.target.parentElement.parentElement,
@@ -578,8 +629,7 @@ async function createShopRow(data, rowItemContainer) {
                 rating = itemClone.querySelector(".Stars"),
                 ratingCount = itemClone.querySelector(".rating-count"),
                 price = itemClone.querySelector(".product-price")
-                
-            
+                      
             image.src=data[i].image
             title.innerText = data[i].title
             rating.style=`--rating: ${data[i].rating.rate}`
@@ -647,6 +697,7 @@ async function getUniqueCategories(data) {
     })
     return Promise.resolve(Array.from(new Set(arr)))
 }
+
 async function hasUniqueCartId(id) {
     let items = document.querySelectorAll(".cart-item")
     let i = []
@@ -669,6 +720,7 @@ async function updated(productId) {
         console.log(err.message)
     }
 }
+
 window.addEventListener("cartUpdated", async (event) => {
     try {
         let id = event.detail.id
@@ -722,6 +774,7 @@ async function addCartItemToCart(productId) {
         console.log(err.message)
     }
 }
+
 async function addCartItemToStorage(productId) {
     try {
         let items = await getCartItemsJSON() ?? []
@@ -734,6 +787,7 @@ async function addCartItemToStorage(productId) {
         console.log(err.message)
     }
 }
+
 async function updateCartItemToStorage(id, quantity) {
     try {
     let items = await getCartItemsJSON() ?? []
@@ -748,16 +802,19 @@ async function updateCartItemToStorage(id, quantity) {
         console.log(err.message)
     }
 }
+
 async function getCartItemsJSON() {
     let storage = localStorage.getItem("cartItems"),
         cartItems = JSON.parse(storage)
     return Promise.resolve(cartItems)
 }
+
 async function setCartItemsJSON(items) {
     let storage = JSON.stringify(items)
     localStorage.setItem("cartItems", storage)
     return Promise.resolve("Cart updated")
 }
+
 async function removeCartItem(productId) {
     try {
         let cart = document.querySelector(".cart-items"),
@@ -790,7 +847,6 @@ async function itemDetailsPage(productId) {
         item = item[0]
         image.style.backgroundImage = `url('${item.image}')`
 
-
         let itemCardTemplate = document.querySelector("#item-card-template"),
             itemCardClone = itemCardTemplate.content.cloneNode(true),
             name = itemCardClone.querySelector(".item-name"),
@@ -807,25 +863,18 @@ async function itemDetailsPage(productId) {
         detailPageContainer.dataset.id = productId
         detailPageContainer.append(detailPageClone)
 
-        //item description tab
         let itemDescriptionTemplate = document.querySelector("#item-description-template"),
             itemDescriptionClone = itemDescriptionTemplate.content.cloneNode(true),
             itemDescription = itemDescriptionClone.querySelector(".item-description")
-
         itemDescription.innerText = item.description
         itemDescriptionContainer.append(itemDescriptionClone)
 
-        //item comments tab
         let comments = await getAllCommentsByProductId(productId)
         await createComments(comments)
 
-        //item specs tab
         let itemSpecsTemplate = document.querySelector("#item-specs-template"),
             itemSpecsClone = itemSpecsTemplate.content.cloneNode(true)
         itemSpecsContainer.append(itemSpecsClone)
-
-        
-
 
     } catch (err) {
         console.log(err.message)
@@ -899,12 +948,45 @@ async function getOrderHistoryByUsername(username) {
 async function orderHistoryPage() {
     try {
         let orderHistoryContainer = document.querySelector("#order-history-container"),
-            orderHistoryTemplate = document.querySelector("#order-history-template"),
-            orderHistoryClone = orderHistoryTemplate.content.cloneNode(true),
             username = orderHistoryContainer?.dataset.name,
-            items = await getOrderHistoryByUsername(username)
+            items = await getOrderHistoryByUsername(username) ?? undefined
+        if(items) {
+            let uniqueDate = [],
+                shopItems = await fetchJSON()
+            items.forEach( (e) => {
+                e.date = moment.utc(e.date).utcOffset(-6).format("yyyy-MM-DDTHH:mm")
+            })
+            Object.keys(items).forEach(key => {
+                uniqueDate.push(items[key].date)
+            })
+            uniqueDate = Array.from(new Set(uniqueDate))
+            uniqueDate.sort( (a , b) => {return b - a})
+            for(let i = 0; i < uniqueDate.length; i++) {
+                let orderHistoryTemplate = document.querySelector("#order-history-template"),
+                    orderHistoryClone = orderHistoryTemplate.content.cloneNode(true),
+                    orderHistoryDate = orderHistoryClone.querySelector(".order-history-date"),
+                    orderHistoryImages = orderHistoryClone.querySelector(".order-history-images"),
+                    orderHistoryPrice = orderHistoryClone.querySelector(".order-history-price"),
+                    filteredItems = items.filter( ({ date }) => date === uniqueDate[i])
+                
 
+                let totalPrice = 0
+                orderHistoryDate.innerText = moment(filteredItems[0].date).format("MMMM Do, yyyy")
+                filteredItems.forEach( (e) => {
+                    let item = shopItems.filter( ({ id }) => id === e.productId)
+                    totalPrice += e.quantity * item[0].price
+                    orderHistoryPrice.innerText = `$${convertToMoney(totalPrice)}`
 
+                    orderHistoryImages.innerHTML += `<div class="order-history-image"
+                                                          data-tooltip="${item[0].title}">
+                                                     <img src="${item[0].image}"  
+                                                          alt="${item[0].title}" />
+                                                     </div>`
+
+                })
+                orderHistoryContainer.append(orderHistoryClone)
+            }
+    }
     } catch(err) {
         console.log(err.message)
     }
@@ -1110,6 +1192,7 @@ async function editComment(e) {
         console.log(err.message)
     }
 }
+
 async function updateComment(id, comment) {
     let options = {
         method: 'PUT',
@@ -1215,6 +1298,19 @@ async function getTable() {
         responsiveLayout: "collapse",
         maxHeight: "100%",
         groupBy: "username",
+        groupHeader:function(value, count, data, group){
+            //value - the value all members of this group share
+            //count - the number of rows in this group
+            //data - an array of all the row data objects in this group
+            //group - the group component for the group
+            var total = 0
+            data.forEach( (e) => {
+                total += e.total
+            })
+            return "<div style='display: inline-grid; grid-auto-flow: column; grid-template-columns: repeat(2, max-content) 1fr; width: 90%;'><span style='color:#222;'>"+ value +"</span><span style='color:#0aa; justify-self: start;'>(" + count + " item)</span><span style='color:#222; place-self: end;'>$"+total+"</span></div>";
+        },
+        
+        groupStartOpen:false,
         columns: [
             { title: "date", field: "date", formatter:function(cell, formatterParams, onRendered) {
                 var value = cell.getValue();
@@ -1228,6 +1324,3 @@ async function getTable() {
         ]
     })
 }
-
-
-
