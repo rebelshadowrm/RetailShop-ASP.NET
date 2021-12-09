@@ -78,7 +78,7 @@ select {
   --btn-primary-hover: hsl(225, 100%, 40%);
   --btn-extra: hsl(210, 100%, 50%);
   --scroll-primary: hsl(220, 100%, 50%);
-  --scroll-secondary: hsl(0 0% 0% / 0.15);
+  --scroll-secondary: hsl(0, 0%, 0%, 0.15);
   --error: #cc0000;
   --tooltip: #333333e5;
   --delete-btn: var(--btn-primary);
@@ -117,8 +117,10 @@ select {
                       7. Details Page
                       8. Comments
                       9. Sales
-                      10. Media Queries
-                      11. Scrollbar
+                      10. Login/Register
+                      11. Profile
+                      12. Media Queries
+                      13. Scrollbar
 
 ********************************************************************/
 
@@ -153,8 +155,8 @@ nav.navbar {
   padding: 0.25rem;
 }
 input {
-  color: inherit !important;
-  background-color: inherit !important;
+  color: inherit;
+  background-color: inherit;
 }
 
 /*********************************************************************
@@ -173,7 +175,7 @@ input {
   grid-auto-flow: column;
   justify-self: flex-end;
   box-shadow: var(--shadow);
-  padding: 0.25rem 0 0.25rem 0.75rem;
+  padding: 0.25rem .25rem 0.25rem 0.75rem;
   font-weight: 500;
   gap: 0.5rem;
   margin-right: 1rem;
@@ -190,7 +192,7 @@ input {
 }
 .select-sort option {
   background-color: inherit;
-  padding-right: 1.5rem;
+  padding-right: 1.25rem;
 }
 #shop-container {
   --gap: 1.25em;
@@ -490,6 +492,7 @@ input {
 .cart-numbers p {
   font-size: 0.9rem;
 }
+.shipping-group,
 .subtotal-group,
 .taxes-group,
 .total-group {
@@ -784,6 +787,7 @@ input {
   margin-bottom: 30vmin;
 }
 .advertisement {
+  display: none;
   align-self: center;
   padding: 1rem;
   margin: 0 auto;
@@ -827,12 +831,14 @@ input {
 }
 .ordered-item-images {
   grid-area: right;
-  padding: 0 2rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: .25rem;
 }
 .ordered-item-images * {
-  width: 4rem;
+  flex: 0 1 24%;
+  max-width: 3rem;
   aspect-ratio: 1;
 }
 
@@ -1523,6 +1529,84 @@ input[type="text"].comment-name:focus-visible {
 }
 
 /*********************************************************************
+                            Login / Register      
+********************************************************************/
+.register-container,
+.login-container {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  margin: 3rem auto 6rem;
+  box-shadow: var(--shadow);
+  height: max-content;
+  max-width: 30rem;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+}
+.register-container form,
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 .75rem;
+}
+.register-container form {
+  padding-bottom: 1.5rem;
+}
+.register-container button[type=submit],
+.login-container button[type=submit] {
+  box-shadow: var(--shadow);
+  border-radius: 100vw;
+}
+.register-container button[type=submit]:hover,
+.login-container button[type=submit]:hover {
+  box-shadow: var(--hoverShadow);
+} 
+.register-container button[type=submit]:focus-visible,
+.login-container button[type=submit]:focus-visible {
+  box-shadow: var(--focusShadow);
+} 
+.register-container form hr {
+  margin: 0;
+}
+.login-container form hr {
+  margin-bottom: 0;
+}
+.login-container form div:nth-child(4) {
+  font-size: 1.25rem;
+  font-weight: 600;
+  user-select: none;
+}
+.register-container h2 {
+  margin: 0;
+}
+.register-container input[type=email],
+.register-container input[type=password],
+.login-container input[type=email],
+.login-container input[type=password] {
+  box-shadow: var(--shadow);
+  border-radius: 100vw;
+  font-size: 1.25rem;
+  background: inherit;
+  border: none;
+  outline: none;
+}
+.register-container input[type=email]:focus-visible,
+.register-container input[type=password]:focus-visible,
+.login-container input[type=email]:focus-visible,
+.login-container input[type=password]:focus-visible {
+  box-shadow: var(--focusShadow);
+}
+
+
+
+/*********************************************************************
+                            Profile      
+********************************************************************/
+
+
+
+/*********************************************************************
                             Media Queries      
 ********************************************************************/
 
@@ -1575,6 +1659,9 @@ input[type="text"].comment-name:focus-visible {
   #checkout-cart-container {
     margin-right: 16rem;
   }
+  .advertisement {
+    display: block;
+  }
 }
 @media only screen and (min-width: 60rem) {
   .items-details-subcontainer {
@@ -1621,6 +1708,7 @@ input[type="text"].comment-name:focus-visible {
 /*********************************************************************
                             SCROLL BAR STYLE       
 ********************************************************************/
+
 /* Chrome / Safari */
 ::-webkit-scrollbar {
   display: block;
@@ -1629,7 +1717,7 @@ input[type="text"].comment-name:focus-visible {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--scroll-primary);
+  background: var(--scroll-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1640,6 +1728,7 @@ input[type="text"].comment-name:focus-visible {
 ::-webkit-scrollbar-corner {
   background: var(--scroll-secondary);
 }
+
 
 /* Firefox --Early module, not as many options  */
 html {

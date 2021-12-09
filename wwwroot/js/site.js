@@ -1,6 +1,5 @@
-﻿//import Tabulator from 'https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.es2015.min.js'
+﻿import Tabulator from 'https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.es2015.min.js'
 
-//TODO: Ideally flesh out the cart class to hold CRUD functions.
 class Cart {
     constructor(productId, quantity) {
         this.productId = productId
@@ -17,12 +16,12 @@ class Comment {
     }
 }
 class Order {
-    constructor(username, fullName, address, date, productID, quantity) {
+    constructor(username, fullName, address, date, productId, quantity) {
         this.username = username
         this.fullName = fullName
         this.address = address
         this.date = date
-        this.productID = parseInt(productID)
+        this.productId = parseInt(productId)
         this.quantity = parseInt(quantity)
     }
 }
@@ -79,6 +78,7 @@ async function fetchJSON() {
 
 document.addEventListener("DOMContentLoaded",  async () => {
     try {
+        
         await getCartItems()
 
         const shopCheck = document.querySelector("#shop-container") ?? undefined
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded",  async () => {
         
         const checkoutCheck = document.querySelector("#checkout-cart-container") ?? undefined
         if(checkoutCheck) {
-            await lockCartToggle()
+            await setShippingListener()
             await setSuccessfulPaymentListener()
         } else {
             await setCartToggle()
@@ -112,25 +112,40 @@ document.addEventListener("DOMContentLoaded",  async () => {
         })
 
         const orderHistory = document.querySelector("#order-history-container")
-        if(orderHistory) {
-            await orderHistoryPage()
-        }
+        if(orderHistory) await orderHistoryPage()
+
 
         const successCheck = document.querySelector("#success-page-container")
         if(successCheck) {
-            let orders = sessionStorage.getItem("orders")
-            await displaySuccessPage(orders)
+            let orders = sessionStorage.getItem("orders"),
+                shipping = sessionStorage.getItem("shipping")
+            orders = JSON.parse(orders)
+            shipping = JSON.parse(shipping)
+            await displaySuccessPage(orders, shipping)
         } else {
 
         }
-        
+        const checkTable = document.querySelector("#salesTable")
+        if(checkTable) await getTable()
         
         await setObserver()
+
 
     } catch(err) {
         console.log(err.message)
     }
 })
+
+async function setShippingListener() {
+    try {
+        const delivery = document.querySelector("#shippingMethod")
+        delivery.addEventListener('change', async (e) => {
+            await updateCartBottom()
+        })
+    } catch(err) {
+        console.log(err.message)
+    }
+}
 
 async function setSuccessfulPaymentListener() {
     try {
@@ -143,12 +158,14 @@ async function setSuccessfulPaymentListener() {
                 address2 = document.querySelector("#address2")?.value,
                 zip = document.querySelector("#zip")?.value,
                 state = document.querySelector("#state")?.value,
+                city = document.querySelector("#city")?.value,
+                shipping = document.querySelector("#shippingMethod").value,
                 productId,
                 quantity,
                 orders = [],
-                date = new Date().toISOString(),
+                date = moment().toISOString(),
                 username = document.querySelector("#checkout-cart-container")?.dataset.name ,
-                fullAddress = `${address} ${address2} ${state} , ${zip}`,
+                fullAddress = `${address} ${address2} ${city}, ${state} , ${zip}`,
                 fullName = `${firstName} ${lastName}`,
                 cart = await getCartItemsJSON()
 
@@ -160,6 +177,7 @@ async function setSuccessfulPaymentListener() {
             let response = await finalizeOrder(orders)
             if(response.status === 201) {
                 sessionStorage.setItem("orders", JSON.stringify(orders))
+                sessionStorage.setItem("shipping", shipping)
                 window.location.replace("/Home/Success")
             }
         })
@@ -168,15 +186,27 @@ async function setSuccessfulPaymentListener() {
     }
 }
 
-async function displaySuccessPage(json) {
+async function displaySuccessPage(orders, shipping) {
     try {
         let successPageContainer = document.querySelector("#success-page-container"),
             successPageTemplate = document.querySelector("#success-page-template"),
             successPageClone = successPageTemplate.content.cloneNode(true),
-            orders = await JSON.parse(json)
-        
+            shop = await fetchJSON(),
+            shippingTo = successPageClone.querySelector(".shipping-to"),
+            deliveryDate = successPageClone.querySelector(".delivery-date"),
+            orderedImg = successPageClone.querySelector(".ordered-item-images"),
+            date
+        orders = orders ? orders : []
+        date = orders[0]?.date ? new Date(orders[0]?.date) : new Date()
+        date.setDate(date.getDate() + shipping?.days)
+        shippingTo.innerHTML = `<strong>Shipping to ${orders[0]?.fullName}</strong> ${orders[0]?.address}`
+        deliveryDate.innerText = moment.utc(date).utcOffset(-6).format("dddd, MMM. D")
+        orders?.forEach( e => {
+            let img = shop?.filter( ({ id }) => id === e.productId)
+            
+            orderedImg.innerHTML += `<img src="${img[0].image}"</img>`
+        })
         successPageContainer.append(successPageClone)
-        console.log(orders)
     } catch(err) {
         console.log(err.message)
     }
@@ -322,11 +352,19 @@ async function lockCartToggle() {
         let cartBtn = document.querySelector("#toggleCart"),
             cart = document.querySelector("#cart-container"),
             main = document.querySelector("main"),
-            subBtn = document.querySelector(".cart-submit-btn")
+            subBtn = document.querySelector(".cart-submit-btn"),
+            taxesGroup = document.querySelector(".taxes-group"),
+            shippingGroup = document.createElement("div"),
+            shipping = document.querySelector(".shipping-group")
         cart?.classList.add("show")
         main?.classList.add("cartShow")
         cartBtn?.classList.add("disabled")
         subBtn?.remove()
+        if(!shipping) {
+            shippingGroup.classList.add("shipping-group")
+            shippingGroup.innerHTML = `<h3>Shipping</h3><p class="cart-shipping"></p>`
+            taxesGroup.after(shippingGroup)
+        }
     } catch(err) {
         console.log(err.message)
     }
@@ -385,8 +423,6 @@ async function updateQuantityNumber(mutation) {
             }
             await removeCartItem(parent.parentElement.dataset.item)
         } else if (parseInt(mutation.target.innerText) > 0) {
-            console.log(changeQuantity)
-            console.log(addToCart)
             await updateAddBtn(changeQuantity, addToCart)
         }
         await updateCartItemToStorage(parent.parentElement.dataset.item, mutation.target.innerText)
@@ -491,6 +527,7 @@ async function updateCartBottom() {
         subtotalField = document.querySelector(".cart-subtotal"),
         taxesField = document.querySelector(".cart-taxes"),
         totalField = document.querySelector(".cart-total"),
+        shippingPrice = document.querySelector("#shippingMethod"),
         items = await getCartItemsJSON() ?? [],
         json = await fetchJSON(),
         quantity = 0,
@@ -505,8 +542,9 @@ async function updateCartBottom() {
             quantity += parseInt(e.quantity, 10)
             subtotal += item.price * e.quantity
         })
+        shippingPrice = shippingPrice?.value ?  JSON.parse(shippingPrice?.value)?.price : 0
         taxes = subtotal * taxes
-        total = taxes + subtotal
+        total = taxes + subtotal + shippingPrice
         if (quantityField.innerText != quantity) {
             if(parseInt(quantity) === 1) {
                 quantityField.innerText = `(${quantity} item)`
@@ -517,8 +555,11 @@ async function updateCartBottom() {
             taxesField.innerText = 'Calculated at checkout'
             totalField.innerText = 'See at checkout'
             if(checkout) {
+            await lockCartToggle()
+            let shippingField = document.querySelector(".cart-shipping")
             taxesField.innerText = `$${convertToMoney(taxes)}`
             totalField.innerText = `$${convertToMoney(total)}`
+            shippingField.innerText = `$${convertToMoney(shippingPrice)}`
             }
         }
     } catch(err) {
@@ -644,16 +685,19 @@ window.addEventListener("cartUpdated", async (event) => {
         let itemDetailsQuantity = itemDetailsContainer?.querySelector(`.quantity-number`)
 
         let quantity = item[0]?.quantity ?? 0
+        var cartQuantity,
+            shopQuantity,
+            detailQuantity
 
         let checkout = document.querySelector("#checkout-cart-container")
         if(checkout) {
-            let shopQuantity = shopItemQuantity?.innerText ?? cartQuantity
-            let cartQuantity = cartItemQuantity?.innerText ?? 0
-            let detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
+            cartQuantity = cartItemQuantity?.innerText ?? 0
+            shopQuantity = shopItemQuantity?.innerText ?? cartQuantity
+            detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
         } else {
-            let shopQuantity = shopItemQuantity?.innerText ?? 0
-            let cartQuantity = cartItemQuantity?.innerText ?? 0
-            let detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
+            cartQuantity = cartItemQuantity?.innerText ?? 0
+            shopQuantity = shopItemQuantity?.innerText ?? 0
+            detailQuantity = itemDetailsQuantity?.innerText ?? cartQuantity
         }
 
         if (shopQuantity != cartQuantity   ||
@@ -1115,34 +1159,75 @@ async function deleteComment(e) {
     }
 }
 
+class OrderTable {
+    constructor(username, date, title, quantity, price, total) {
+        this.username = username
+        this.date = date,
+        this.title = title,
+        this.quantity = quantity,
+        this.price = price,
+        this.total = total
+    }
+}
 
-
-// // table
-
-// var table = new Tabulator("#shop", {
-//     ajaxURL: shopAPI,
-//     layout: "fitDataFill",
-//     autoResize: true,
-//     resizableColumns: false,
-//     resizableRows: false,
-//     responsiveLayout: "collapse",
-//     maxHeight: "100%",
-//     headerVisible: false, //hide header
-//     columns: [
-//         {
-//             title: "image", field: "image", formatter: "image", function(cell, formatterParams) {
-//                 return `<img src="${cell.getValue()}" >`
-//             }, width:200, variableHeight: true, responsive:0
-//         },
-//         { title: "title", field: "title", responsive: 1 },
-//         { title: "category", field: "category", responsive: 2 },
-//         { title: "description", field: "description", formatter: "textarea", responsive: 0, width:300 },
-//         { title: "price", field: "price", formatter: "money", responsive: 3 },
+async function generateTableData() {
+    let shop = await fetchJSON(),
+        orders = await fetchOrderHistory(),
+        tableOrders = [],
+        filter,
+        price
         
-//     ],
-// })
+    for(let i = 0; i < orders.length; i++) {
+        filter = shop.filter( ({ id }) => id === orders[i].productId )
+        price = filter[0]?.price * orders[i]?.quantity
+        tableOrders.push(
+            new OrderTable(
+                orders[i]?.username,
+                orders[i]?.date,
+                filter[0]?.title,
+                orders[i]?.quantity,
+                filter[0]?.price,
+                price 
+            ))
+    }
+    return tableOrders
+}
 
+async function fetchOrderHistory() {
+    const response = await fetch('/api/orders')
+    if(!response.ok) {
+        const message = `An error has occured: ${response.status}`
+        throw new Error(message)
+    }
+    const json = await response.json()
+    return Promise.resolve(json)
+}
 
+async function getTable() {
+    let data = await generateTableData()
+
+    const table = new Tabulator("#salesTable", {
+        data: data,
+        layout: "fitColumns",
+        autoResize: true,
+        resizableColumns: false,
+        resizableRows: false,
+        responsiveLayout: "collapse",
+        maxHeight: "100%",
+        groupBy: "username",
+        columns: [
+            { title: "date", field: "date", formatter:function(cell, formatterParams, onRendered) {
+                var value = cell.getValue();
+                value = moment.utc(value).utcOffset(-6).format("ha MMM D, YYYY");
+                return value;
+            }, width:130},
+            { title: "Product", field: "title" },
+            { title: "Qty", field: "quantity", width:70 },
+            { title: "Price", field: "price", formatter: "money", width:90},
+            { title: "Total", field: "total", formatter: "money", width:90, bottomCalc:"sum", bottomCalcFormatter:"money" }      
+        ]
+    })
+}
 
 
 
