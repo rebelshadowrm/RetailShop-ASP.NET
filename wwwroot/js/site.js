@@ -1322,7 +1322,7 @@ async function getTable() {
             data.forEach( (e) => {
                 total += e.total
             })
-            return "<div style='display: inline-grid; grid-auto-flow: column; grid-template-columns: repeat(2, max-content) 1fr; width: 90%;'><span style='color:#222;'>"+ value +"</span><span style='color:#0aa; justify-self: start;'>(" + count + " item)</span><span style='color:#222; place-self: end;'>$"+total+"</span></div>";
+            return "<div style='display: inline-grid; grid-auto-flow: column; grid-template-columns: repeat(2, max-content) 1fr; width: 90%;'><span style='color:#222;'>"+ value +"</span><span style='color:#0aa; justify-self: start;'>(" + count + " item)</span><span style='color:#222; place-self: end;'>$"+(Math.floor(total*100).toFixed(0)/100).toFixed(2)+"</span></div>";
         },
         
         groupStartOpen:false,
