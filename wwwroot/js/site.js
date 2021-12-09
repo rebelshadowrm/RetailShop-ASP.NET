@@ -1088,7 +1088,10 @@ async function postComment(comment) {
 async function commentBoxListeners() {
     try {
     const postBtn = document.querySelector("#comment-post"),
-          cancelBtn = document.querySelector("#comment-cancel")
+          cancelBtn = document.querySelector("#comment-cancel"),
+          createBtn = document.querySelector("#openCommentCreate"),
+          commentCreate = document.querySelector("#create-comment"),
+          showComment = document.querySelector(".show-comment-create")
 
     postBtn?.addEventListener('click', async (e) => {
         e.preventDefault
@@ -1126,7 +1129,14 @@ async function commentBoxListeners() {
     
     cancelBtn?.addEventListener('click', async (e) => {
         e.preventDefault
-        //add some kind of display toggle to comment area to make this useful
+        commentCreate.classList.toggle("hidden")
+        showComment.classList.toggle("hidden")
+    })
+
+    createBtn?.addEventListener('click', async (e) => {
+        e.preventDefault
+        commentCreate.classList.toggle("hidden")
+        showComment.classList.toggle("hidden")
     })
 
     } catch(err) {
