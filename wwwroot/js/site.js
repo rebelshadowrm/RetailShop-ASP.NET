@@ -1114,6 +1114,8 @@ async function commentBoxListeners() {
             rating.value = 5
             error.innerText = ""
             error.dataset.tooltip = ""
+            commentCreate.classList.toggle('hidden')
+            showComment.classList.toggle("hidden")
         } else {
             let titleError = `✖ Title can't be empty`,
                 bodyError = `✖ Body can't be empty`,
