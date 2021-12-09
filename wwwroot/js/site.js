@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded",  async () => {
             id = id.replace("/Home/Details/", "")
             await itemDetailsPage(id)
             await commentBoxListeners()
+            let login = document.querySelector(".comment-login")
+            login.href = `/Identity/Account/Login?ReturnUrl=/Home/Details/${id}`
         }
 
         const mobileCartBtn = document.querySelector("#toggleMobileCart")
@@ -843,7 +845,7 @@ async function itemDetailsPage(productId) {
             itemSpecsContainer = detailPageClone.querySelector(".item-specs-container"),
             json = await fetchJSON(),
             item = json?.filter( ({ id }) => id === parseInt(productId)) ?? []
-
+            
         item = item[0]
         image.style.backgroundImage = `url('${item.image}')`
 
@@ -875,6 +877,7 @@ async function itemDetailsPage(productId) {
         let itemSpecsTemplate = document.querySelector("#item-specs-template"),
             itemSpecsClone = itemSpecsTemplate.content.cloneNode(true)
         itemSpecsContainer.append(itemSpecsClone)
+
 
     } catch (err) {
         console.log(err.message)
