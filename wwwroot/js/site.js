@@ -636,7 +636,7 @@ async function createShopRow(data, rowItemContainer) {
             title.innerText = data[i].title
             rating.style=`--rating: ${data[i].rating.rate}`
             ratingCount.innerText=`(${data[i].rating.count})`
-            price.innerText = `$${data[i].price}`
+            price.innerText = `$${convertToMoney(data[i].price)}`
             
             let quantityContainer = itemClone.querySelector(".item-quantity-container"),
                 quantityClone = await createQuantityBtn(data[i].id)
@@ -682,7 +682,7 @@ async function createCartItem(json) {
 
     cartItemImage.src=json.image
     cartItemName.innerText=json.title
-    cartItemPrice.innerText=json.price
+    cartItemPrice.innerText= convertToMoney(json.price)
     cartItem.dataset.item=json.id
 
     let cartQuantityContainer = cartItemClone.querySelector(".cart-item-quantity")
