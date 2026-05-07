@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("AmazonSqlConnection");
+var connectionString = GetRequiredConnectionString(builder.Configuration, "AmazonSqlConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -15,8 +17,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("CommentDb")));
-builder.Services.AddDbContext<OrderHistoryContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("OrderHistoryDb")));
+builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "CommentDb")));
+builder.Services.AddDbContext<OrderHistoryContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "OrderHistoryDb")));
 var app = builder.Build();
 
 var host = app.Services.GetRequiredService<IServiceProvider>();
@@ -30,7 +32,7 @@ using (var scope = host.CreateScope())
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         await ContextSeed.SeedRolesAsync(userManager, roleManager);
-        await ContextSeed.SeedAdminAsync(userManager, roleManager);
+        await ContextSeed.SeedAdminAsync(userManager, roleManager, builder.Configuration);
     }
     catch (Exception ex)
     {
@@ -115,3 +117,15 @@ app.MapRazorPages();
 
 
 app.Run();
+
+static string GetRequiredConnectionString(IConfiguration configuration, string name)
+{
+    var connectionString = configuration.GetConnectionString(name);
+    if (!string.IsNullOrWhiteSpace(connectionString))
+    {
+        return connectionString;
+    }
+
+    throw new InvalidOperationException(
+        $"Missing connection string '{name}'. Configure it via user secrets, environment variables, or appsettings.Local.json.");
+}

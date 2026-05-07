@@ -1,7 +1,33 @@
 # ASP-Group-Project  
-**Default admin account**  
-Username: admin@example.com  
-Password: <removed-password>
+
+## Local configuration
+
+This repository no longer stores database credentials or a default admin password.
+
+Provide the required values through `.NET user-secrets`, environment variables, or a local `appsettings.Local.json` file that is not committed.
+
+### Required connection strings
+
+- `ConnectionStrings:AmazonSqlConnection`
+- `ConnectionStrings:CommentDb`
+- `ConnectionStrings:OrderHistoryDb`
+
+### Optional admin bootstrap
+
+If you want the app to create an admin user on startup, set both:
+
+- `SeedAdmin:Email`
+- `SeedAdmin:Password`
+
+Example with user-secrets:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:AmazonSqlConnection" "<identity-db-connection-string>"
+dotnet user-secrets set "ConnectionStrings:CommentDb" "<comments-db-connection-string>"
+dotnet user-secrets set "ConnectionStrings:OrderHistoryDb" "<order-history-db-connection-string>"
+dotnet user-secrets set "SeedAdmin:Email" "admin@example.com"
+dotnet user-secrets set "SeedAdmin:Password" "<strong-password>"
+```
 
 ~~website: https://asp-group-project20211123101749.azurewebsites.net~~  
 Project is now moving from azure to aws.  
