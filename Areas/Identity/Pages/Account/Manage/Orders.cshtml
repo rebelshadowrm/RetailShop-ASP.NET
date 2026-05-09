@@ -1,0 +1,21 @@
+﻿@page
+ 
+@{
+    ViewData["Title"] = "Order History";
+    ViewData["ActivePage"] = ManageNavPages.Orders;
+}
+<h3>@ViewData["Title"]</h3>
+<div class="row">
+    <div data-name=@User.Identity?.Name id="order-history-container"></div>
+    <template id="order-history-template">
+        <article class="order-history-card">
+            <h4 class="order-history-date"></h4>
+            <div class="order-history-images"></div>
+            <p class="order-history-price"></p>
+        </article>
+    </template>
+</div>
+
+@section Scripts {
+    
+}

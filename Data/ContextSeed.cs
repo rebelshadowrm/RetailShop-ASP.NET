@@ -7,28 +7,53 @@ namespace Asp_Group_Project.Data
         public static async Task SeedRolesAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             //Seed Roles
-            await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Customer.ToString()));
+            foreach (var roleName in Enum.GetNames(typeof(Enums.Roles)))
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
         }
 
-        public static async Task SeedAdminAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedAdminAsync(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration)
         {
-            //Seed Default User
+            var adminEmail = configuration["SeedAdmin:Email"];
+            var adminPassword = configuration["SeedAdmin:Password"];
+
+            if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+            {
+                return;
+            }
+
+            // Seed an admin user only when explicit local or deployment secrets are provided.
             var defaultUser = new IdentityUser
             {
-                UserName = "admin@example.com",
-                Email = "admin@example.com",
+                UserName = adminEmail,
+                Email = adminEmail,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
-            if (userManager.Users.All(u => u.Id != defaultUser.Id))
+
+            var user = await userManager.FindByEmailAsync(defaultUser.Email);
+            if (user == null)
             {
-                var user = await userManager.FindByEmailAsync(defaultUser.Email);
-                if (user == null)
+                var createResult = await userManager.CreateAsync(defaultUser, adminPassword);
+                if (!createResult.Succeeded)
                 {
-                    await userManager.CreateAsync(defaultUser, "<removed-password>");
-                    await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Admin.ToString());
+                    var errors = string.Join("; ", createResult.Errors.Select(error => error.Description));
+                    throw new InvalidOperationException($"Failed to create seeded admin user: {errors}");
                 }
+
+                user = defaultUser;
+            }
+
+            if (!await userManager.IsInRoleAsync(user, Enums.Roles.Admin.ToString()))
+            {
+                await userManager.AddToRoleAsync(user, Enums.Roles.Admin.ToString());
             }
         }
     }

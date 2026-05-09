@@ -25,7 +25,7 @@ namespace Asp_Group_Project.Controllers
         }
 
         [Authorize(Roles = "Admin, Customer")]
-        public IActionResult Privacy()
+        public IActionResult Success()
         {
             return View();
         }
