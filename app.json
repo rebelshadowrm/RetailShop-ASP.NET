@@ -15,6 +15,18 @@
     },
     "DatabaseProvider": {
       "value": "Postgres"
+    },
+    "SeedUsers__Admin__Email": {
+      "value": "demo.admin@example.com"
+    },
+    "SeedUsers__Admin__Password": {
+      "required": true
+    },
+    "SeedUsers__Customer__Email": {
+      "value": "demo.customer@example.com"
+    },
+    "SeedUsers__Customer__Password": {
+      "required": true
     }
   },
   "addons": [

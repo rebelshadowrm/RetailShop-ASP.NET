@@ -39,6 +39,8 @@ Required Heroku setup:
 heroku buildpacks:set heroku/dotnet -a <app-name>
 heroku addons:create heroku-postgresql:essential-0 -a <app-name>
 heroku config:set ASPNETCORE_ENVIRONMENT=Production DemoMode=false DatabaseProvider=Postgres -a <app-name>
+heroku config:set SeedUsers__Admin__Email=demo.admin@example.com SeedUsers__Admin__Password=<demo-admin-password> -a <app-name>
+heroku config:set SeedUsers__Customer__Email=demo.customer@example.com SeedUsers__Customer__Password=<demo-customer-password> -a <app-name>
 ```
 
 Heroku Postgres provides `DATABASE_URL`. In `DatabaseProvider=Postgres` mode, the app parses that value and uses SSL-required Npgsql connections for Identity, comments, and order history.
