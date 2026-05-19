@@ -34,16 +34,9 @@ namespace Asp_Group_Project.Data
 
         private static async Task EnsurePostgresIdentitySchemaAsync(ApplicationDbContext identityContext)
         {
-            if (!await HasAnyPostgresTablesAsync(identityContext))
-            {
-                await identityContext.Database.EnsureCreatedAsync();
-                return;
-            }
-
             if (!await HasPostgresTableAsync(identityContext, "AspNetUsers"))
             {
-                throw new InvalidOperationException(
-                    "Postgres database is not empty but the ASP.NET Identity schema is missing. Use an empty Heroku Postgres database for first deployment.");
+                await identityContext.Database.ExecuteSqlRawAsync(identityContext.Database.GenerateCreateScript());
             }
         }
 
@@ -73,26 +66,6 @@ namespace Asp_Group_Project.Data
                     "Quantity" integer NOT NULL
                 );
                 """);
-        }
-
-        private static async Task<bool> HasAnyPostgresTablesAsync(DbContext context)
-        {
-            var connection = context.Database.GetDbConnection();
-            if (connection.State != System.Data.ConnectionState.Open)
-            {
-                await connection.OpenAsync();
-            }
-
-            await using var command = connection.CreateCommand();
-            command.CommandText = """
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM information_schema.tables
-                    WHERE table_schema = 'public'
-                );
-                """;
-
-            return (bool)(await command.ExecuteScalarAsync() ?? false);
         }
 
         private static async Task<bool> HasPostgresTableAsync(DbContext context, string tableName)
