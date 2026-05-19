@@ -1,0 +1,23 @@
+{
+  "name": "RetailShop ASP.NET Portfolio",
+  "description": "Restored ASP.NET Core retail/e-commerce group project portfolio showcase.",
+  "buildpacks": [
+    {
+      "url": "heroku/dotnet"
+    }
+  ],
+  "env": {
+    "ASPNETCORE_ENVIRONMENT": {
+      "value": "Production"
+    },
+    "DemoMode": {
+      "value": "false"
+    },
+    "DatabaseProvider": {
+      "value": "Postgres"
+    }
+  },
+  "addons": [
+    "heroku-postgresql:essential-0"
+  ]
+}

@@ -27,6 +27,26 @@ Demo credentials are intentionally non-production:
 
 To use SQL Server instead, set `DemoMode` to `false` in `appsettings.Local.json` or environment variables, then provide the required connection strings.
 
+Product images are committed under `wwwroot/img/shop` and are loaded locally from `wwwroot/js/storeData.json`. The app no longer depends on the old S3 product image bucket. PNG files are intentionally kept as the canonical assets for now; WebP/AVIF conversion is deferred until after deployment is stable.
+
+## Heroku deployment prep
+
+Heroku deployment is prepared for the official `.NET` buildpack and Heroku Postgres. Docker is intentionally not part of this phase.
+
+Required Heroku setup:
+
+```powershell
+heroku buildpacks:set heroku/dotnet -a <app-name>
+heroku addons:create heroku-postgresql:essential-0 -a <app-name>
+heroku config:set ASPNETCORE_ENVIRONMENT=Production DemoMode=false DatabaseProvider=Postgres -a <app-name>
+```
+
+Heroku Postgres provides `DATABASE_URL`. In `DatabaseProvider=Postgres` mode, the app parses that value and uses SSL-required Npgsql connections for Identity, comments, and order history.
+
+The first Heroku deployment expects an empty Heroku Postgres database. The app creates the ASP.NET Identity schema only when the database is empty, then creates the comments and order-history tables with idempotent Postgres SQL. If the database is not empty but Identity tables are missing, startup fails with a clear error instead of guessing.
+
+SQLite demo data under `App_Data/` is local-only and ignored by git.
+
 ### Required connection strings
 
 - `ConnectionStrings:AmazonSqlConnection`
