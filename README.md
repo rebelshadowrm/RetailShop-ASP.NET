@@ -6,6 +6,27 @@ This repository no longer stores database credentials or a default admin passwor
 
 Provide the required values through `.NET user-secrets`, environment variables, or a local `appsettings.Local.json` file that is not committed.
 
+## Local demo mode
+
+The project targets .NET 10 and can run locally without the old AWS/Azure SQL Server databases.
+
+Install the .NET 10 SDK, then run:
+
+```powershell
+dotnet restore
+dotnet build
+dotnet run
+```
+
+In `Development`, demo mode is enabled by default and uses SQLite files under `App_Data/`. These files are local runtime data and are ignored by git.
+
+Demo credentials are intentionally non-production:
+
+- Admin: `demo.admin@example.com` / `DemoAdmin123!`
+- Customer: `demo.customer@example.com` / `DemoCustomer123!`
+
+To use SQL Server instead, set `DemoMode` to `false` in `appsettings.Local.json` or environment variables, then provide the required connection strings.
+
 ### Required connection strings
 
 - `ConnectionStrings:AmazonSqlConnection`

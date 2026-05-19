@@ -16,24 +16,48 @@ namespace Asp_Group_Project.Data
             }
         }
 
-        public static async Task SeedAdminAsync(
+        public static async Task SeedUsersAsync(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IConfiguration configuration)
         {
-            var adminEmail = configuration["SeedAdmin:Email"];
-            var adminPassword = configuration["SeedAdmin:Password"];
+            await SeedUserAsync(
+                userManager,
+                roleManager,
+                configuration["SeedUsers:Admin:Email"] ?? configuration["SeedAdmin:Email"],
+                configuration["SeedUsers:Admin:Password"] ?? configuration["SeedAdmin:Password"],
+                Enums.Roles.Admin.ToString());
 
-            if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+            await SeedUserAsync(
+                userManager,
+                roleManager,
+                configuration["SeedUsers:Customer:Email"],
+                configuration["SeedUsers:Customer:Password"],
+                Enums.Roles.Customer.ToString());
+        }
+
+        private static async Task SeedUserAsync(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            string? email,
+            string? password,
+            string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
                 return;
             }
 
-            // Seed an admin user only when explicit local or deployment secrets are provided.
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            // Demo users are seeded only from explicit local/demo configuration.
             var defaultUser = new IdentityUser
             {
-                UserName = adminEmail,
-                Email = adminEmail,
+                UserName = email,
+                Email = email,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
             };
@@ -41,19 +65,19 @@ namespace Asp_Group_Project.Data
             var user = await userManager.FindByEmailAsync(defaultUser.Email);
             if (user == null)
             {
-                var createResult = await userManager.CreateAsync(defaultUser, adminPassword);
+                var createResult = await userManager.CreateAsync(defaultUser, password);
                 if (!createResult.Succeeded)
                 {
                     var errors = string.Join("; ", createResult.Errors.Select(error => error.Description));
-                    throw new InvalidOperationException($"Failed to create seeded admin user: {errors}");
+                    throw new InvalidOperationException($"Failed to create seeded {roleName} user: {errors}");
                 }
 
                 user = defaultUser;
             }
 
-            if (!await userManager.IsInRoleAsync(user, Enums.Roles.Admin.ToString()))
+            if (!await userManager.IsInRoleAsync(user, roleName))
             {
-                await userManager.AddToRoleAsync(user, Enums.Roles.Admin.ToString());
+                await userManager.AddToRoleAsync(user, roleName);
             }
         }
     }

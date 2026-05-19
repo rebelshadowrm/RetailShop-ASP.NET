@@ -1,4 +1,5 @@
 using Asp_Group_Project.Data;
+using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,10 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
+var demoMode = builder.Configuration.GetValue<bool>("DemoMode");
+
 // Add services to the container.
-var connectionString = GetRequiredConnectionString(builder.Configuration, "AmazonSqlConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+ConfigureDbContext<ApplicationDbContext>(builder.Services, builder.Configuration, demoMode, "AmazonSqlConnection");
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>()
@@ -17,8 +18,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "CommentDb")));
-builder.Services.AddDbContext<OrderHistoryContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "OrderHistoryDb")));
+ConfigureDbContext<CommentContext>(builder.Services, builder.Configuration, demoMode, "CommentDb");
+ConfigureDbContext<OrderHistoryContext>(builder.Services, builder.Configuration, demoMode, "OrderHistoryDb");
 var app = builder.Build();
 
 var host = app.Services.GetRequiredService<IServiceProvider>();
@@ -29,10 +30,20 @@ using (var scope = host.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+        var commentContext = services.GetRequiredService<CommentContext>();
+        var orderHistoryContext = services.GetRequiredService<OrderHistoryContext>();
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        if (demoMode)
+        {
+            await EnsureDemoDatabaseAsync(context);
+            await EnsureDemoDatabaseAsync(commentContext);
+            await EnsureDemoDatabaseAsync(orderHistoryContext);
+        }
+
         await ContextSeed.SeedRolesAsync(userManager, roleManager);
-        await ContextSeed.SeedAdminAsync(userManager, roleManager, builder.Configuration);
+        await ContextSeed.SeedUsersAsync(userManager, roleManager, builder.Configuration);
     }
     catch (Exception ex)
     {
@@ -117,6 +128,46 @@ app.MapRazorPages();
 
 
 app.Run();
+
+static void ConfigureDbContext<TContext>(
+    IServiceCollection services,
+    IConfiguration configuration,
+    bool demoMode,
+    string connectionStringName) where TContext : DbContext
+{
+    services.AddDbContext<TContext>(options =>
+    {
+        var connectionString = GetRequiredConnectionString(configuration, connectionStringName);
+        if (demoMode)
+        {
+            EnsureSqliteDirectory(connectionString);
+            options.UseSqlite(connectionString);
+            return;
+        }
+
+        options.UseSqlServer(connectionString);
+    });
+}
+
+static async Task EnsureDemoDatabaseAsync(DbContext context)
+{
+    await context.Database.EnsureCreatedAsync();
+}
+
+static void EnsureSqliteDirectory(string connectionString)
+{
+    var builder = new SqliteConnectionStringBuilder(connectionString);
+    if (string.IsNullOrWhiteSpace(builder.DataSource) || builder.DataSource == ":memory:")
+    {
+        return;
+    }
+
+    var directory = Path.GetDirectoryName(Path.GetFullPath(builder.DataSource));
+    if (!string.IsNullOrWhiteSpace(directory))
+    {
+        Directory.CreateDirectory(directory);
+    }
+}
 
 static string GetRequiredConnectionString(IConfiguration configuration, string name)
 {
