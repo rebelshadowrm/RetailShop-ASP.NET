@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Asp_Group_Project-979F09A3-B5C9-45CE-AEBC-49A6CB0DFFDF</UserSecretsId>
@@ -16,15 +16,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
   </ItemGroup>
 
 </Project>

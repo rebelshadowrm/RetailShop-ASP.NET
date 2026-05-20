@@ -1,15 +1,18 @@
 using Asp_Group_Project.Data;
+using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
+var demoMode = builder.Configuration.GetValue<bool>("DemoMode");
+var databaseProvider = GetDatabaseProvider(builder.Configuration, demoMode);
+
 // Add services to the container.
-var connectionString = GetRequiredConnectionString(builder.Configuration, "AmazonSqlConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+ConfigureDbContext<ApplicationDbContext>(builder.Services, builder.Configuration, databaseProvider, "AmazonSqlConnection");
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>()
@@ -17,8 +20,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<CommentContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "CommentDb")));
-builder.Services.AddDbContext<OrderHistoryContext>(o => o.UseSqlServer(GetRequiredConnectionString(builder.Configuration, "OrderHistoryDb")));
+ConfigureDbContext<CommentContext>(builder.Services, builder.Configuration, databaseProvider, "CommentDb");
+ConfigureDbContext<OrderHistoryContext>(builder.Services, builder.Configuration, databaseProvider, "OrderHistoryDb");
 var app = builder.Build();
 
 var host = app.Services.GetRequiredService<IServiceProvider>();
@@ -29,10 +32,19 @@ using (var scope = host.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+        var commentContext = services.GetRequiredService<CommentContext>();
+        var orderHistoryContext = services.GetRequiredService<OrderHistoryContext>();
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        await DatabaseInitializer.EnsureDatabasesAsync(
+            context,
+            commentContext,
+            orderHistoryContext,
+            databaseProvider);
+
         await ContextSeed.SeedRolesAsync(userManager, roleManager);
-        await ContextSeed.SeedAdminAsync(userManager, roleManager, builder.Configuration);
+        await ContextSeed.SeedUsersAsync(userManager, roleManager, builder.Configuration);
     }
     catch (Exception ex)
     {
@@ -117,6 +129,96 @@ app.MapRazorPages();
 
 
 app.Run();
+
+static void ConfigureDbContext<TContext>(
+    IServiceCollection services,
+    IConfiguration configuration,
+    DatabaseProvider databaseProvider,
+    string connectionStringName) where TContext : DbContext
+{
+    services.AddDbContext<TContext>(options =>
+    {
+        if (databaseProvider == DatabaseProvider.Sqlite)
+        {
+            var connectionString = GetRequiredConnectionString(configuration, connectionStringName);
+            EnsureSqliteDirectory(connectionString);
+            options.UseSqlite(connectionString);
+            return;
+        }
+
+        if (databaseProvider == DatabaseProvider.Postgres)
+        {
+            options.UseNpgsql(GetRequiredPostgresConnectionString(configuration));
+            return;
+        }
+
+        options.UseSqlServer(GetRequiredConnectionString(configuration, connectionStringName));
+    });
+}
+
+static void EnsureSqliteDirectory(string connectionString)
+{
+    var builder = new SqliteConnectionStringBuilder(connectionString);
+    if (string.IsNullOrWhiteSpace(builder.DataSource) || builder.DataSource == ":memory:")
+    {
+        return;
+    }
+
+    var directory = Path.GetDirectoryName(Path.GetFullPath(builder.DataSource));
+    if (!string.IsNullOrWhiteSpace(directory))
+    {
+        Directory.CreateDirectory(directory);
+    }
+}
+
+static DatabaseProvider GetDatabaseProvider(IConfiguration configuration, bool demoMode)
+{
+    if (demoMode)
+    {
+        return DatabaseProvider.Sqlite;
+    }
+
+    var value = configuration["DatabaseProvider"];
+    if (string.IsNullOrWhiteSpace(value))
+    {
+        return DatabaseProvider.SqlServer;
+    }
+
+    if (Enum.TryParse<DatabaseProvider>(value, ignoreCase: true, out var databaseProvider))
+    {
+        return databaseProvider;
+    }
+
+    throw new InvalidOperationException(
+        $"Unsupported DatabaseProvider '{value}'. Use SqlServer, Postgres, or Sqlite.");
+}
+
+static string GetRequiredPostgresConnectionString(IConfiguration configuration)
+{
+    var databaseUrl = configuration["DATABASE_URL"];
+    if (string.IsNullOrWhiteSpace(databaseUrl))
+    {
+        throw new InvalidOperationException(
+            "Missing DATABASE_URL. Heroku Postgres provides this config var when the add-on is attached.");
+    }
+
+    var databaseUri = new Uri(databaseUrl);
+    var userInfo = databaseUri.UserInfo.Split(':', 2);
+    if (userInfo.Length != 2)
+    {
+        throw new InvalidOperationException("DATABASE_URL must include PostgreSQL username and password.");
+    }
+
+    return new NpgsqlConnectionStringBuilder
+    {
+        Host = databaseUri.Host,
+        Port = databaseUri.Port > 0 ? databaseUri.Port : 5432,
+        Database = databaseUri.AbsolutePath.TrimStart('/'),
+        Username = Uri.UnescapeDataString(userInfo[0]),
+        Password = Uri.UnescapeDataString(userInfo[1]),
+        SslMode = SslMode.Require
+    }.ConnectionString;
+}
 
 static string GetRequiredConnectionString(IConfiguration configuration, string name)
 {
