@@ -1,4 +1,17 @@
-# ASP-Group-Project  
+# ASP-Group-Project
+
+## Live demo
+
+The restored portfolio version is available at:
+
+https://retailshop-aspnet-demo-2d97bf760f14.herokuapp.com/
+
+Use one of the seeded, non-production accounts:
+
+- Customer: `demo.customer@example.com` / `DemoCustomer123!`
+- Admin: `demo.admin@example.com` / `DemoAdmin123!`
+
+The customer account can access Checkout. The admin account can also access the Sales dashboard. Registration remains available to preserve the original ASP.NET Core Identity workflow, but seeded accounts are recommended for portfolio review because demo data may be reset and email delivery is not configured.
 
 ## Local configuration
 
@@ -76,7 +89,6 @@ dotnet user-secrets set "SeedAdmin:Password" "<strong-password>"
 Project is now moving from azure to aws.  
   
 ~~website: http://asp-g-recip-12kr0dfui2w59-814129720.us-east-2.elb.amazonaws.com~~  
-For some reason identity (login/register) doesn't work with previous docker build.
   
 ~~Website: http://aspgroupproject-dev.us-east-2.elasticbeanstalk.com~~    
 ~~Newest up to date website link: http://asp-project.group~~  
